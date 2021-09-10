@@ -121,14 +121,16 @@ def create_control_from_selected_joints(radius=1.0, point=True, orient=False):
 
 
 def get_joint_and_control(verbose=False):
+    # returns a joint and a control if only a single joint and control are selected
     selection = pm.ls(sl=True, tr=True)
     if len(selection) == 2:
         joint = next((x for x in selection if type(x) == pm.nodetypes.Joint), None)
         control = next((x for x in selection if type(x) != pm.nodetypes.Joint), None)
-        if joint and control:
-            if verbose:
-                print(f'Joint: {joint.name()}\nControl: {control.name()}')
-            return joint, control
+        if verbose:
+            print(f'Joint: {joint.name()}\nControl: {control.name()}')
+        return joint, control
+    else:
+        return None, None
 
 
 def snap_and_align_control_to_joint():

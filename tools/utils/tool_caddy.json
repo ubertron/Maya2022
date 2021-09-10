@@ -1,0 +1,24 @@
+{
+  "Node": {
+    "Create Locator": {
+      "script": "from tools import ad_node\nad_node.create_locator([0, 0, 0])",
+      "tool_tip": "Create a locator at the origin"
+    }
+  },
+  "Rigging": {
+    "Offset Transformations": {
+      "script": "from tools import ad_rigging\nad_rigging.offset_transformations()",
+      "tool_tip": "Transfer transformations to the parent offset matrix."
+    },
+    "Snap And Align Control To Joint": {
+      "script": "from tools import ad_rigging\nad_rigging.snap_and_align_control_to_joint()",
+      "tool_tip": "Snap And Align Control To Joint"
+    }
+  },
+  "Test": {
+    "Test Script": {
+      "script": "print('hello world')",
+      "tool_tip": "Test Script"
+    }
+  }
+}
