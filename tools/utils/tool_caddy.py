@@ -3,12 +3,12 @@ import os
 
 from PySide2.QtWidgets import QComboBox, QLabel, QWidget, QVBoxLayout, QPushButton
 from PySide2.QtCore import QSettings
-from tools.ui.ad_widgets import MayaWidget, VBoxLayout, Widget
-from tools.ui import dockable_widget
+from tools.ui.ad_widgets import VBoxLayout, Widget, MayaDockableWidget
+from tools.ui.dockable_widget import DockableBase
 from functools import partial
 
 
-class ToolCaddy(MayaWidget):
+class ToolCaddy(MayaDockableWidget):
     TITLE = 'Tool Caddy'
     JSON_PATH = os.path.join(os.path.dirname(__file__), 'tool_caddy.json')
     all = 'All'
@@ -62,31 +62,9 @@ class ToolCaddy(MayaWidget):
     def execute_script(script):
         exec(script)
 
-class ToolCaddyDockable(QWidget):
-    def __init__(self):
-        super(ToolCaddyDockable, self).__init__()
-        self.setLayout(VBoxLayout())
-        self.layout().addWidget(ToolCaddy())
-        self.layout().addStretch(1)
-
-
-class ToolCaddyDM(dockable_widget.DockManager):
-    def __init__(self):
-        super(ToolCaddyDM, self).__init__()
-        self.window_name = 'tool_caddy'
-        self.mixin_cls = lambda: dockable_widget.MayaMixin(window_name=self.window_name,
-                                                           main_widget_cls=ToolCaddyDockable, title='Tool Caddy')
-
 
 if __name__ == '__main__':
-    from importlib import reload
-    from tools.ui import ad_widgets
     from tools.utils import tool_caddy
 
-    reload(ad_widgets)
-    reload(tool_caddy)
-
-    if 'tool_caddy_tool' in globals():
-        tool_caddy_tool.close()
-    tool_caddy_tool = tool_caddy.ToolCaddy()
-    tool_caddy_tool.show()
+    tools = tool_caddy.ToolCaddy()
+    tools.show()
