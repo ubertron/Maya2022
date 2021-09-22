@@ -2,6 +2,7 @@ import inspect
 
 import maya.OpenMayaUI as omui
 from maya.app.general.mayaMixin import MayaQWidgetDockableMixin
+import pymel.core as pm
 
 from PySide2 import QtWidgets
 import shiboken2
@@ -9,13 +10,13 @@ import shiboken2
 mixinWindows = {}
 
 
-class DockableBase(MayaQWidgetDockableMixin):
+class ADDockableBase(MayaQWidgetDockableMixin):
     """
     Convenience class for creating dockable Maya windows.
     """
 
     def __init__(self, controlName, **kwargs):
-        super(DockableBase, self).__init__(**kwargs)
+        super(ADDockableBase, self).__init__(**kwargs)
         self.setObjectName(controlName)
 
     def show(self, *args, **kwargs):
@@ -24,9 +25,10 @@ class DockableBase(MayaQWidgetDockableMixin):
         """
         modulePath = inspect.getmodule(self).__name__
         className = self.__class__.__name__
-        super(DockableBase, self).show(dockable=True,
-                                       uiScript="import {0}; {0}.{1}._restoreUI()".format(modulePath, className),
-                                       **kwargs)
+        print(f"module path: {modulePath}\nclass name: {className}")
+        super(ADDockableBase, self).show(dockable=True,
+                                         uiScript="import {0}; {0}.{1}._restoreUI()".format(modulePath, className),
+                                         **kwargs)
 
     @classmethod
     def _restoreUI(cls):
@@ -40,7 +42,10 @@ class DockableBase(MayaQWidgetDockableMixin):
         # Grab the pointer to our instance as a Maya object
         mixinPtr = omui.MQtUtil.findControl(instance.objectName())
         # Add our UI to the WorkspaceControl
-        omui.MQtUtil.addWidgetToMayaLayout(long(mixinPtr), long(workspaceControl))
+        if pm.versions.current() > 20190000:
+            omui.MQtUtil.addWidgetToMayaLayout(int(mixinPtr), int(workspaceControl))
+        else:
+            omui.MQtUtil.addWidgetToMayaLayout(long(mixinPtr), long(workspaceControl))
         # Store reference to UI
         global mixinWindows
         mixinWindows[instance.objectName()] = instance

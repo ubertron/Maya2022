@@ -1,27 +1,28 @@
 import json
 import os
 
-from PySide2.QtWidgets import QComboBox, QLabel, QWidget, QVBoxLayout, QPushButton
+from PySide2.QtWidgets import QComboBox, QLabel, QWidget, QPushButton
 from PySide2.QtCore import QSettings
-from tools.ui.ad_widgets import VBoxLayout, Widget, MayaDockableWidget
-from tools.ui.dockable_widget import DockableBase
+from ad_tools.ui.ad_maya_widgets import ADWidget, ADMayaDockableWidget
+from ad_tools.ui.ad_dockable_base import ADDockableBase
 from functools import partial
 
 
-class ToolCaddy(MayaDockableWidget):
-    TITLE = 'Tool Caddy'
+class ToolCaddy(ADMayaDockableWidget):
+    control_name = 'ToolCaddy'
+    window_name = 'Tool Caddy'
     JSON_PATH = os.path.join(os.path.dirname(__file__), 'tool_caddy.json')
     all = 'All'
 
     def __init__(self):
-        super(ToolCaddy, self).__init__(self.TITLE)
+        super(ToolCaddy, self).__init__(self.control_name, self.window_name)
         with open(self.JSON_PATH) as f:
             self.tool_data = json.load(f)
         self.settings = QSettings('robosoft', 'tool_caddy')
         self.filter = self.settings.value('filter', self.all)
         self.combo_box = QComboBox()
-        self.button_widget = Widget()
-        self.script_widget = Widget()
+        self.button_widget = ADWidget()
+        self.script_widget = ADWidget()
         self.status_bar = QLabel('Ready')
         self.add_widget(self.combo_box)
         self.add_widget(self.script_widget)
@@ -64,7 +65,7 @@ class ToolCaddy(MayaDockableWidget):
 
 
 if __name__ == '__main__':
-    from tools.utils import tool_caddy
+    from ad_tools.utils import tool_caddy
 
     tools = tool_caddy.ToolCaddy()
     tools.show()
