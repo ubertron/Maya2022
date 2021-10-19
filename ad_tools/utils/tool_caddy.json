@@ -1,18 +1,28 @@
 {
   "Node": {
     "Create Locator": {
-      "script": "from tools import ad_node\nad_node.create_locator([0, 0, 0])",
+      "script": "from ad_tools import ad_node\nad_node.create_locator([0, 0, 0])",
       "tool_tip": "Create a locator at the origin"
     }
   },
   "Rigging": {
     "Offset Transformations": {
-      "script": "from tools import ad_rigging\nad_rigging.offset_transformations()",
+      "script": "from ad_tools import ad_rigging\nad_rigging.offset_transformations()",
       "tool_tip": "Transfer transformations to the parent offset matrix."
     },
     "Snap And Align Control To Joint": {
-      "script": "from tools import ad_rigging\nad_rigging.snap_and_align_control_to_joint()",
+      "script": "from ad_tools import ad_rigging\nad_rigging.snap_and_align_control_to_joint()",
       "tool_tip": "Snap And Align Control To Joint"
+    }
+  },
+  "Vertex Colors": {
+    "Set Random Face Vertex Color": {
+      "script": "from ad_tools import ad_vertex_colors\nad_vertex_colors.apply_vertex_color_to_selected_faces()",
+      "tool_tip": "Set Random Face Vertex Color."
+    },
+    "Select Faces By Vertex Color": {
+      "script": "from ad_tools import ad_vertex_colors\nad_vertex_colors.select_faces_by_selected_vertex_colors()",
+      "tool_tip": "Select Faces By Vertex Color."
     }
   },
   "Test": {
