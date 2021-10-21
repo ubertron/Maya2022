@@ -16,9 +16,9 @@
     }
   },
   "Vertex Colors": {
-    "Set Random Face Vertex Color": {
-      "script": "from ad_tools import ad_vertex_colors\nad_vertex_colors.apply_vertex_color_to_selected_faces()",
-      "tool_tip": "Set Random Face Vertex Color."
+    "Set Random Vertex Color": {
+      "script": "from ad_tools import ad_vertex_colors\nad_vertex_colors.apply_vertex_color()",
+      "tool_tip": "Set Random Vertex Color."
     },
     "Select Faces By Vertex Color": {
       "script": "from ad_tools import ad_vertex_colors\nad_vertex_colors.select_faces_by_selected_vertex_colors()",
