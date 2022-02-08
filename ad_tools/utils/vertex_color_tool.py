@@ -31,15 +31,25 @@ class VertexColorTool(ADMayaWidget):
         self.button_widget.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Maximum)
         self.add_widget(self.button_widget)
         self.setMinimumWidth(328)
-        self.script_job_id = pm.scriptJob(event=["SelectionChanged", self.refresh_ui])
+        self.script_job_id = None
+        self.current_nodes = None
+        self.enable_script_job()
         self.refresh_ui()
 
+    def enable_script_job(self):
+        self.script_job_id = pm.scriptJob(event=['SelectionChanged', self.refresh_ui])
+
+    def disable_script_job(self):
+        pm.scriptJob(kill=self.script_job_id)
+
     def refresh_ui(self):
+        self.current_nodes = self.current_transforms
         transform_names = [x.name() for x in self.current_transforms]
         selection = ', '.join(transform_names) if transform_names else 'None'
         self.selection_label.setText(f"Selection: {selection}")
         self.button_widget.clear_layout()
         for x in self.parsed_vertex_colors:
+            print(f'Parsed vertex color: {x}, {type(x)}')
             button = SwatchMultiButton(self.button_size, x)
             button.add_button('Select', partial(self.select_vertex_color, x))
             button.add_button('Remove', self.test_event)
@@ -56,7 +66,8 @@ class VertexColorTool(ADMayaWidget):
     def remove_vertex_color_clicked():
         ad_vertex_colors.remove_vertex_color()
 
-    def test_event(self):
+    @staticmethod
+    def test_event():
         print('Test')
 
     @property
@@ -71,13 +82,15 @@ class VertexColorTool(ADMayaWidget):
     def apply_vertex_color(color):
         ad_vertex_colors.apply_vertex_color(color)
 
-    @staticmethod
-    def select_vertex_color(color):
+    def select_vertex_color(self, color):
+        self.disable_script_job()
         ad_vertex_colors.select_faces_by_vertex_color(color)
+        self.enable_script_job()
 
-    @staticmethod
-    def select_by_vertex_color_clicked():
+    def select_by_vertex_color_clicked(self):
+        self.disable_script_job()
         ad_vertex_colors.select_faces_by_selected_vertex_colors()
+        self.enable_script_job()
 
     @property
     def vertex_colors(self):
@@ -92,7 +105,7 @@ class VertexColorTool(ADMayaWidget):
 
     @staticmethod
     def parse_vertex_color(str_color):
-        return tuple([int(255 * float(x)) for x in str_color[1: -1].split(', ')])
+        return [float(x) for x in str_color[1: -1].split(', ')]
 
     def closeEvent(self, event):
         if pm.scriptJob(exists=self.script_job_id):

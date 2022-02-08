@@ -192,23 +192,23 @@ class ColorPickerButton(QWidget):
 
 
 class SwatchMultiButton(QWidget):
-    def __init__(self, size, color=(255, 0, 0), parent=None):
+    def __init__(self, size, color=(1., 0., 0.), parent=None):
         super(SwatchMultiButton, self).__init__(parent=parent)
         self.size = size
-        self.color = color
+        self.rgb_int_255 = tuple([int(x * 255) for x in color])
         self.setLayout(HBoxLayout(0))
         self.color_picker = QPushButton()
         self.color_picker.setFixedSize(size, size)
         self.color_picker.clicked.connect(self.swatch_button_clicked)
-        self.color_picker.setStyleSheet(f'background-color: rgb{str(color)};')
+        self.color_picker.setStyleSheet(f'background-color: rgb{str(self.rgb_int_255)}')
         self.layout().addWidget(self.color_picker)
 
     def swatch_button_clicked(self):
         default = QColor()
-        default.setRgb(*self.color)
+        default.setRgb(*self.rgb_int_255)
         col = QColorDialog.getColor(default)
         if col.isValid():
-            self.color = self.hex_to_rgb(col.name())
+            self.rgb_int_255 = self.hex_to_rgb(col.name())
             self.color_picker.setStyleSheet('background-color: {}'.format(col.name()))
 
     @staticmethod
