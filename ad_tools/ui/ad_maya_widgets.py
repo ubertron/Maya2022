@@ -5,10 +5,10 @@ import platform
 
 import pymel.core as pm
 from PySide2.QtCore import Signal, Qt, QRegExp, QSize
-from PySide2.QtWidgets import QGroupBox, QHBoxLayout, QMainWindow, QPushButton,\
-    QSizePolicy, QSpacerItem, QVBoxLayout, QWidget, QDialog, QLabel, QTextEdit,\
+from PySide2.QtWidgets import QGroupBox, QHBoxLayout, QMainWindow, QPushButton, \
+    QSizePolicy, QSpacerItem, QVBoxLayout, QWidget, QDialog, QLabel, QTextEdit, \
     QWidgetItem, QLayout, QGridLayout, QColorDialog
-from PySide2.QtGui import QColor
+from PySide2.QtGui import QColor, QPixmap, QIcon
 from maya.OpenMayaUI import MQtUtil
 from maya import cmds
 from shiboken2 import wrapInstance, getCppPointer
@@ -18,6 +18,7 @@ from ad_tools.ui.ad_dockable_base import ADDockableBase
 def maya_main_window():
     main_window_ptr = MQtUtil.mainWindow()
     return wrapInstance(int(main_window_ptr), QWidget)
+
 
 class ADMayaWidget(QWidget):
     def __init__(self, window_name, v_layout=True, parent=maya_main_window()):
@@ -113,12 +114,14 @@ class ADMayaDockableWidget(ADDockableBase, QWidget):
         QWidget().setLayout(self.layout())
         self.setLayout(layout)
 
+
 class VBoxLayout(QVBoxLayout):
     def __init__(self, margin=2):
         super(VBoxLayout, self).__init__()
         self.setContentsMargins(margin, margin, margin, margin)
         self.setMargin(margin)
         self.setSpacing(margin)
+
 
 class HBoxLayout(QHBoxLayout):
     def __init__(self, margin=2):
@@ -158,6 +161,7 @@ def delete_existing_workspace_control(token):
     if cmds.workspaceControl(workspace_control_name, exists=True):
         cmds.workspaceControl(workspace_control_name, edit=True, close=True)
         cmds.deleteUI(workspace_control_name, control=True)
+
 
 class ColorPickerButton(QWidget):
     def __init__(self, label, size, event, default_color=(255, 0, 0), parent=None):
@@ -223,3 +227,15 @@ class SwatchMultiButton(QWidget):
         button.setFixedHeight(self.size)
         button.clicked.connect(event)
         self.layout().addWidget(button)
+
+
+class IconButton(QPushButton):
+    def __init__(self, label, icon_path, size=24):
+        super(IconButton, self).__init__()
+        if os.path.isfile(icon_path):
+            self.setFixedSize(QSize(size, size))
+            self.setIcon(QPixmap(icon_path))
+            self.setToolTip(label)
+        else:
+            self.setMaximumHeight(size)
+            self.setText(label)

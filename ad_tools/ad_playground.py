@@ -2,6 +2,7 @@ import pymel.core as pm
 import ad_node
 import ad_rigging
 
+
 def create_rig():
     pm.delete(pm.ls('locator*', tr=True))
     pm.delete(pm.ls('joint*', tr=True))
@@ -10,6 +11,7 @@ def create_rig():
     pm.delete(joint_locators)
     locators = ad_rigging.create_locators_from_joints(rig)
     pm.select(locators)
+
 
 def create_rig_hierarchy():
     pm.delete(pm.ls('locator*', tr=True))
@@ -22,6 +24,7 @@ def create_rig_hierarchy():
     pm.delete(joint_locators)
     locator_hierarchy = ad_rigging.create_locators_from_joints(rig)
     pm.select(locator_hierarchy)
+
 
 def create_creature_rig(num_joints=8):
     pm.delete(pm.ls('locator*', tr=True))

@@ -217,12 +217,14 @@ def get_selected_transforms():
     state.restore()
     return selection
 
+
 def get_transforms(nodes=None):
     state = State()
     set_component_mode(ComponentType.object)
     selection = pm.ls(nodes, tr=True) if nodes else pm.ls(sl=True, tr=True)
     state.restore()
     return selection
+
 
 def get_shapes_from_transform(xform_node, full_path=False):
     return pm.listRelatives(xform_node, f=full_path, shapes=True) if pm.nodeType(

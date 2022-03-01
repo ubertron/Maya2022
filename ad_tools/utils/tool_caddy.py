@@ -1,11 +1,12 @@
 import json
 import os
-
-from PySide2.QtWidgets import QComboBox, QLabel, QWidget, QPushButton
-from PySide2.QtCore import QSettings
-from ad_tools.ui.ad_maya_widgets import ADWidget, ADMayaDockableWidget
-from ad_tools.ui.ad_dockable_base import ADDockableBase
 from functools import partial
+
+from PySide2.QtCore import QSettings
+from PySide2.QtWidgets import QComboBox, QLabel, QPushButton, QSizePolicy
+
+from ad_tools import icon_path
+from ad_tools.ui.ad_maya_widgets import ADWidget, ADMayaDockableWidget, IconButton
 
 
 class ToolCaddy(ADMayaDockableWidget):
@@ -16,20 +17,29 @@ class ToolCaddy(ADMayaDockableWidget):
 
     def __init__(self):
         super(ToolCaddy, self).__init__(self.control_name, self.window_name)
-        with open(self.JSON_PATH) as f:
-            self.tool_data = json.load(f)
         self.settings = QSettings('robosoft', 'tool_caddy')
         self.filter = self.settings.value('filter', self.all)
+        button_bar = ADWidget()
+        self.refresh_button = IconButton("Refresh Button", icon_path("refresh.png"), 24)
+        button_bar.add_widget(self.refresh_button)
+        button_bar.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Maximum)
         self.combo_box = QComboBox()
         self.button_widget = ADWidget()
         self.script_widget = ADWidget()
         self.status_bar = QLabel('Ready')
+        self.add_widget(button_bar)
         self.add_widget(self.combo_box)
         self.add_widget(self.script_widget)
         self.add_widget(self.status_bar)
         self.init_combo_box()
+        self.refresh_button.clicked.connect(self.refresh_button_clicked)
         self.refresh_buttons()
         self.setMinimumWidth(320)
+
+    @property
+    def tool_data(self):
+        with open(self.JSON_PATH) as f:
+            return json.load(f)
 
     def init_combo_box(self):
         self.combo_box.clear()
@@ -38,6 +48,10 @@ class ToolCaddy(ADMayaDockableWidget):
         self.combo_box.addItems([self.all] + tool_keys)
         self.combo_box.setCurrentText(self.filter)
         self.combo_box.currentIndexChanged.connect(self.combo_box_changed)
+
+    def refresh_button_clicked(self):
+        self.status_bar.setText("Refresh button clicked")
+        self.refresh_buttons()
 
     def combo_box_changed(self):
         self.filter = self.combo_box.currentText()
