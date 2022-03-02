@@ -1,18 +1,52 @@
 {
+  "Display": {
+    "Toggle Backface-Culling": {
+      "script": "from ad_tools.ad_display import toggle_backface_culling\ntoggle_backface_culling()",
+      "tool_tip": "Toggle toggle_backface_culling on selected objects."
+    },
+    "Toggle Layer Shading": {
+      "script": "from ad_tools.ad_layers import toggle_current_layer_shading\ntoggle_current_layer_shading()",
+      "tool_tip": "Toggle shading on current layer."
+    },
+    "Toggle X-Ray": {
+      "script": "from ad_tools.ad_display import toggle_xray\ntoggle_xray()",
+      "tool_tip": "Toggle xray on selected objects."
+    }
+  },
   "Modeling": {
     "Cleft In Twain (YZ)": {
       "script": "from ad_tools.ad_poly import cleft_in_twain; cleft_in_twain()",
       "tool_tip": "Chop an object in half."
     },
+    "Connect": {
+      "script": "from ad_tools.ad_poly import connect_edges; connect_edges()",
+      "tool_tip": "Connect edges."
+    },
+    "Connect With Edge Flow": {
+      "script": "from ad_tools.ad_poly import connect_edges; connect_edges(True)",
+      "tool_tip": "Connect edges with edge flow."
+    },
+    "Extract Selected Faces": {
+      "script": "from ad_tools.ad_poly import extract_selected_faces; extract_selected_faces()",
+      "tool_tip": "Extract Selected Faces."
+    },
     "Mirror (-X)": {
       "script": "from ad_tools.ad_poly import mirror; mirror()",
       "tool_tip": "Mirror selected in negative X-axis."
+    },
+    "Relax Vertices": {
+      "script": "from ad_tools.ad_poly import relax_vertices; relax_vertices()",
+      "tool_tip": "Relax selected vertices."
     }
   },
   "Node": {
     "Create Locator": {
       "script": "from ad_tools import ad_node\nad_node.create_locator([0, 0, 0])",
       "tool_tip": "Create a locator at the origin"
+    },
+    "Super Reset": {
+      "script": "from ad_tools.ad_node import super_reset\nsuper_reset()",
+      "tool_tip": "Fix stuff"
     }
   },
   "Rigging": {

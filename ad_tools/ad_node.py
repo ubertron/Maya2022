@@ -239,3 +239,30 @@ def get_transform_from_shape(node, full_path=False):
 def is_node_type(obj, node_type):
     shape = get_shapes_from_transform(obj)
     return node_type == pm.nodeType(shape[0]) if shape else None
+
+
+def super_reset(nodes=None):
+    nodes = pm.ls(nodes, tr=True) if nodes else pm.ls(sl=True, tr=True)
+    freeze_transformations(nodes)
+    reset_pivot(nodes)
+    delete_history(nodes)
+
+
+def freeze_transformations(pm_obj=None):
+    for node in list(pm_obj) if pm_obj else pm.ls(sl=True, tr=True):
+        pm.makeIdentity(node, apply=True, translate=True, rotate=True, scale=True)
+
+
+def reset_pivot(nodes=None):
+    for item in pm.ls(nodes, tr=True) if nodes else pm.ls(sl=True, tr=True):
+        pivot_node = pm.xform(item, query=True, worldSpace=True, rotatePivot=True)
+        pm.xform(item, relative=True, translation=[-i for i in pivot_node])
+        pm.makeIdentity(item, apply=True, translate=True)
+        pm.xform(item, translation=pivot_node)
+
+
+def delete_history(nodes=None):
+    state = State()
+    set_component_mode(ComponentType.object)
+    pm.delete(pm.ls(nodes, tr=True) if nodes else pm.ls(sl=True, tr=True), constructionHistory=True)
+    state.restore()

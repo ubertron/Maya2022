@@ -1,7 +1,7 @@
 import pymel.core as pm
 
 from ad_tools.ad_node import State, ComponentType, is_node_type, set_component_mode, \
-    get_component_indices
+    get_component_indices, get_component_mode, select_components, encode_components
 from ad_tools import Axis
 
 
@@ -12,6 +12,39 @@ def get_selected_geometry():
                      if is_node_type(item, 'mesh')]
     state.restore()
     return geometry_list
+
+
+def get_selected_vertices(obj):
+    state = State()
+    pm.select(obj)
+    set_component_mode(ComponentType.vertex)
+    components = pm.ls(sl=True)
+    selection = [] if components == [] else get_component_indices(components)
+    state.restore()
+    return selection
+
+
+def get_selected_edges(obj):
+    state = State()
+    pm.select(obj)
+    pm.selectMode(component=True)
+    pm.selectType(edge=True)
+    set_component_mode(ComponentType.edge)
+    components = pm.ls(sl=True)
+    selection = [] if components == [] else get_component_indices(components)
+    pm.select(clear=True)
+    state.restore()
+    return selection
+
+
+def get_selected_faces(obj):
+    state = State()
+    pm.select(obj)
+    set_component_mode(ComponentType.face)
+    components = pm.ls(sl=True)
+    selection = [] if components == [] else get_component_indices(components)
+    state.restore()
+    return selection
 
 
 def get_faces_from_edge(obj, edge):
@@ -103,3 +136,51 @@ def mirror(nodes=None, axis=Axis.x, positive=False, merge_threshold=0.001):
         pm.polyMirrorFace(item, ws=True, d=direction[axis], mergeMode=1, p=pivot_position, mt=merge_threshold)
 
     state.restore()
+
+
+def connect_edges(edge_flow=False):
+    if get_component_mode() == ComponentType.edge and len(pm.ls(sl=True)):
+        pm.polyConnectComponents(pm.ls(sl=True), insertWithEdgeFlow=1 if edge_flow else 0, adjustEdgeFlow=1)
+
+
+def relax_vertices(nodes=None, iterations=2, history=False):
+    state = State()
+    for n in pm.ls(nodes, tr=True) if nodes else get_selected_geometry():
+        selected_vertices = get_selected_vertices(n)
+        indices = selected_vertices if selected_vertices else range(len(n.vtx))
+        pm.polyAverageVertex(n.vtx[indices], iterations=iterations, ch=history)
+    state.restore()
+
+
+def extract_selected_faces():
+    if get_component_mode() == ComponentType.face:
+        state = State()
+        dupe_list = []
+        for item in state.object_selection:
+            pm.hilite(item, replace=True)
+            faces = get_component_indices()
+            if faces:
+                dupe_list.append(extract_faces(item, faces, False))
+        if dupe_list:
+            set_component_mode(ComponentType.object)
+            pm.select(dupe_list)
+            return dupe_list
+        else:
+            pm.warning('No faces selected')
+            state.restore()
+    else:
+        pm.warning('Select faces in face component mode.')
+
+
+def extract_faces(node, faces, restore_state=True):
+    state = State()
+    inverse_faces = [i for i in range(node.faces.count()) if i not in faces]
+    dupe = pm.duplicate(node)[0]
+    pm.rename(dupe, '{}_extraction'.format(node.name()))
+    pm.delete(encode_components(node, faces, ComponentType.face))
+    pm.delete(encode_components(dupe, inverse_faces, ComponentType.face))
+    if restore_state:
+        state.restore()
+        if node in state.object_selection:
+            pm.select(dupe, add=True)
+    return dupe
