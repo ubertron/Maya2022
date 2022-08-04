@@ -1,8 +1,8 @@
 import pymel.core as pm
 
-from ad_tools.ad_node import State, ComponentType, is_node_type, set_component_mode, \
-    get_component_indices, get_component_mode, select_components, encode_components
-from ad_tools import Axis
+from ad_tools.maya_node import State, ComponentType, is_node_type, set_component_mode, \
+    get_component_indices, get_component_mode, select_components, encode_components, reset_pivot
+from ad_tools import Axis, NodeType
 
 
 def get_selected_geometry():
@@ -133,8 +133,7 @@ def mirror(nodes=None, axis=Axis.x, positive=False, merge_threshold=0.001):
     for item in nodes:
         pivot_position = [pm.xform(item, query=True, piv=True, ws=True)[i] for i in range(3)]
         cleft_in_twain(item, axis, not positive)
-        pm.polyMirrorFace(item, ws=True, d=direction[axis], mergeMode=1, p=pivot_position, mt=merge_threshold)
-
+        pm.polyMirrorFace(item, ws=True, d=direction[axis], mergeMode=1, p=pivot_position, mt=merge_threshold, mtt=1)
     state.restore()
 
 
@@ -184,3 +183,26 @@ def extract_faces(node, faces, restore_state=True):
         if node in state.object_selection:
             pm.select(dupe, add=True)
     return dupe
+
+
+def combine(nodes=None, construction_history=False):
+    state = State()
+    nodes = pm.ls(nodes) if nodes else pm.ls(sl=True, transforms=True)
+    nodes = [item for item in nodes if is_node_type(item, NodeType.mesh)]
+    select_combined = list(
+        set(nodes).intersection(state.object_selection)) and state.component_mode == ComponentType.object
+    if len(nodes) > 1:
+        state.remove_objects(nodes)  # Has to be done manually before objects are combined
+        new_name = nodes[-1].name()
+        pivot_position = pm.getAttr(nodes[-1].translate)
+        new_object = pm.polyUnite(nodes, ch=construction_history)[0]
+        pm.rename(new_object, new_name)
+        pm.xform(new_object, worldSpace=True, rotatePivot=pivot_position)
+        pm.xform(new_object, worldSpace=True, scalePivot=pivot_position)
+        reset_pivot(new_object)
+        state.restore()
+        if select_combined:
+            pm.select(new_object, add=True)
+        return new_object
+    else:
+        pm.warning('Please select more than one valid object.')

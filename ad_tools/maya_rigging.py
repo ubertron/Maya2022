@@ -1,19 +1,18 @@
 import pymel.core as pm
-import numpy
 
-from ad_tools import ad_node
-from ad_tools.ad_layers import create_display_layer
+from ad_tools import maya_node
+from ad_tools.maya_layers import create_display_layer
 
 
 class ConstraintType:
-    point = 'point'
-    orient = 'orient'
-    parent = 'parent'
+    point = "point"
+    orient = "orient"
+    parent = "parent"
 
 
 def create_rigging_layers():
-    for i in ['geometry', 'skeleton', 'control', 'utility']:
-        create_display_layer(f'{i}Layer')
+    for i in ["geometry", "skeleton", "control", "utility"]:
+        create_display_layer(f"{i}Layer")
 
 
 def create_joints_from_transforms(transforms, scale=0.2):
@@ -31,7 +30,7 @@ def create_joints_from_hierarchy(node, parent=None, scale=0.2):
         pm.select(parent)
     else:
         pm.select(clear=True)
-    joint = pm.joint(p=ad_node.get_world_space_translation(node), radius=scale)
+    joint = pm.joint(p=maya_node.get_world_space_translation(node), radius=scale)
     for i in pm.listRelatives(node, children=True, type=pm.nodetypes.Transform):
         create_joints_from_hierarchy(i, parent=joint, scale=scale)
     return get_root_joint(joint)
@@ -56,19 +55,26 @@ def get_root_joint(joint):
 
 
 def reorient_joints(root_joint):
-    pm.joint(root_joint, edit=True, orientJoint='xyz', secondaryAxisOrient='xup', children=True, zeroScaleOrient=True)
+    pm.joint(
+        root_joint,
+        edit=True,
+        orientJoint="xyz",
+        secondaryAxisOrient="xup",
+        children=True,
+        zeroScaleOrient=True,
+    )
     for i in get_end_joints(root_joint):
-        pm.joint(i, edit=True, orientJoint='none')
+        pm.joint(i, edit=True, orientJoint="none")
 
 
 def reorient_selected_joints():
-    root_joint = ad_rigging.get_root_joint(pm.ls(sl=True, type=pm.nodetypes.Joint))
+    root_joint = get_root_joint(pm.ls(sl=True, type=pm.nodetypes.Joint))
     if root_joint:
-        ad_rigging.reorient_joints(root_joint)
+        reorient_joints(root_joint)
 
 
 def create_locators_from_joints(joint, parent=None):
-    locator = ad_node.create_locator(ad_node.get_world_space_translation(joint))
+    locator = maya_node.create_locator(maya_node.get_world_space_translation(joint))
     pm.parent(locator, parent)
     for i in pm.listRelatives(joint):
         create_locators_from_joints(i, locator)
@@ -89,20 +95,20 @@ def create_control(joint, radius):
     return control
 
 
-def offset_transformations(node=None):
+def offset_transformations(node=None, offset_node_override=False):
     """Transfers rotations to offset parent matrix"""
     transforms = pm.ls(node, tr=True) if node else pm.ls(sl=True, tr=True)
     for transform in transforms:
         if pm.versions.current() > 20190000 or offset_node_override:
             pm.connectAttr(transform.matrix, transform.offsetParentMatrix, force=True)
             pm.disconnectAttr(transform.matrix, transform.offsetParentMatrix)
-            pm.setAttr(transform.translate, (0, 0, 0), type='float3')
-            pm.setAttr(transform.rotate, (0, 0, 0), type='float3')
+            pm.setAttr(transform.translate, (0, 0, 0), type="float3")
+            pm.setAttr(transform.rotate, (0, 0, 0), type="float3")
         else:
             offset_node = pm.group(transform)
-            pm.setAttr(offset_node.rotate, pm.getAttr(transform.rotate), type='float3')
-            pm.setAttr(transform.translate, (0, 0, 0), type='float3')
-            pm.setAttr(transform.rotate, (0, 0, 0), type='float3')
+            pm.setAttr(offset_node.rotate, pm.getAttr(transform.rotate), type="float3")
+            pm.setAttr(transform.translate, (0, 0, 0), type="float3")
+            pm.setAttr(transform.rotate, (0, 0, 0), type="float3")
             pm.makeIdentity(offset_node, apply=True, translate=True)
 
 
@@ -127,7 +133,7 @@ def get_joint_and_control(verbose=False):
         joint = next((x for x in selection if type(x) == pm.nodetypes.Joint), None)
         control = next((x for x in selection if type(x) != pm.nodetypes.Joint), None)
         if verbose:
-            print(f'Joint: {joint.name()}\nControl: {control.name()}')
+            print(f"Joint: {joint.name()}\nControl: {control.name()}")
         return joint, control
     else:
         return None, None
@@ -154,6 +160,7 @@ def constrain_joint_to_control(constraint_type, maintain_offset=True):
     else:
         pm.warning("Please select joint and control")
 
+
 def move_and_parent_constraint_control_to_joint(maintain_offset=True):
     joint, control = get_joint_and_control()
     if joint and control:
@@ -161,6 +168,7 @@ def move_and_parent_constraint_control_to_joint(maintain_offset=True):
         pm.parentConstraint(joint, control, maintainOffset=maintain_offset)
     else:
         pm.warning("Please select joint and control")
+
 
 def set_visible(transform, value=True):
     pm.setAttr(transform.visibility, value)
@@ -170,13 +178,17 @@ def set_visible(transform, value=True):
     pm.setAttr(transform.visibleInReflections, value)
     pm.setAttr(transform.visibleInRefractions, value)
 
+
 def create_proximity_constraint():
     joint, control = get_joint_and_control()
     if joint and control:
-        proximity_mesh, _ = pm.polyPlane(axis=[0, 1, 0], width=.25, height=.25, name='proximityTarget', sx=1, sy=1)
+        proximity_mesh, _ = pm.polyPlane(
+            axis=[0, 1, 0], width=0.25, height=0.25, name="proximityTarget", sx=1, sy=1
+        )
         set_visible(proximity_mesh, False)
         pm.matchTransform(proximity_mesh, joint)
         pm.parent(proximity_mesh, joint)
         import maya.internal.common.cmd.base
+
         pm.select(proximity_mesh, control)
-        maya.internal.common.cmd.base.executeCommand('proximitypin.cmd_create')
+        maya.internal.common.cmd.base.executeCommand("proximitypin.cmd_create")

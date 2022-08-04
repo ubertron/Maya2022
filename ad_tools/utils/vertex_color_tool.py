@@ -5,7 +5,7 @@ import math
 from PySide2.QtWidgets import QWidget, QPushButton, QLabel, QSizePolicy, QApplication
 from ad_tools.ui.ad_maya_widgets import ADMayaWidget, ColorPickerButton, \
     SwatchMultiButton, ADWidget
-from ad_tools import ad_vertex_colors, ad_node
+from ad_tools import maya_vertex_colors, maya_node
 from functools import partial
 
 class VertexColorTool(ADMayaWidget):

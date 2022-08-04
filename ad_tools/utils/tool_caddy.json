@@ -18,6 +18,10 @@
       "script": "from ad_tools.ad_poly import cleft_in_twain; cleft_in_twain()",
       "tool_tip": "Chop an object in half."
     },
+    "Combine": {
+      "script": "from ad_tools.ad_poly import combine; combine()",
+      "tool_tip": "Combine selected geometry."
+    },
     "Connect": {
       "script": "from ad_tools.ad_poly import connect_edges; connect_edges()",
       "tool_tip": "Connect edges."
@@ -37,6 +41,10 @@
     "Relax Vertices": {
       "script": "from ad_tools.ad_poly import relax_vertices; relax_vertices()",
       "tool_tip": "Relax selected vertices."
+    },
+    "Target Weld": {
+      "script": "import maya.mel as mel\nmel.eval('dR_targetWeldTool')",
+      "tool_tip": "Target Weld Tool."
     }
   },
   "Node": {
@@ -67,12 +75,6 @@
     "Select Faces By Vertex Color": {
       "script": "from ad_tools import ad_vertex_colors\nad_vertex_colors.select_faces_by_selected_vertex_colors()",
       "tool_tip": "Select Faces By Vertex Color."
-    }
-  },
-  "Test": {
-    "Test Script": {
-      "script": "print('hello world')",
-      "tool_tip": "Test Script"
     }
   }
 }
