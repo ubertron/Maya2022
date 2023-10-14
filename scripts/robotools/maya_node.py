@@ -1,21 +1,37 @@
 import pymel.core as pm
 import random
 
+from typing import Sequence
+
 
 def get_world_space_translation(transform):
     return pm.xform(transform, query=True, worldSpace=True, rotatePivot=True)
 
 
-def create_locator(translation, local_scale=0.1):
+def create_locator(translation: Sequence[float, float, float], local_scale: float = 0.1):
+    """
+    Create a space locator
+    @param translation:
+    @param local_scale:
+    @return:
+    """
     locator = pm.spaceLocator()
     pm.setAttr(locator.translate, translation, type='float3')
     pm.setAttr(locator.localScaleX, local_scale)
     pm.setAttr(locator.localScaleY, local_scale)
     pm.setAttr(locator.localScaleZ, local_scale)
+
     return locator
 
 
-def create_random_locators(count, scale=2.0, planar=True):
+def create_random_locators(count: int, scale: float = 2.0, planar: bool = True):
+    """
+    Create a random set of locators
+    @param count:
+    @param scale:
+    @param planar:
+    @return:
+    """
     locators = []
     for i in range(count):
         tx = 0 if planar else random.uniform(0, scale)

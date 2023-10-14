@@ -3,16 +3,15 @@
 import os
 import platform
 
-import pymel.core as pm
-from PySide2.QtCore import Signal, Qt, QRegExp, QSize
-from PySide2.QtWidgets import QGroupBox, QHBoxLayout, QMainWindow, QPushButton, \
-    QSizePolicy, QSpacerItem, QVBoxLayout, QWidget, QDialog, QLabel, QTextEdit, \
-    QWidgetItem, QLayout, QGridLayout, QColorDialog
-from PySide2.QtGui import QColor, QPixmap, QIcon
+from PySide2.QtCore import Qt, QRegExp, QSize
+from PySide2.QtWidgets import QHBoxLayout, QPushButton, \
+    QSizePolicy, QVBoxLayout, QWidget, QLabel, QTextEdit, \
+    QColorDialog
+from PySide2.QtGui import QColor, QPixmap
 from maya.OpenMayaUI import MQtUtil
 from maya import cmds
-from shiboken2 import wrapInstance, getCppPointer
-from ad_tools.ui.ad_dockable_base import ADDockableBase
+from shiboken2 import wrapInstance
+from robotools.widgets.ad_dockable_base import ADDockableBase
 
 
 def maya_main_window():

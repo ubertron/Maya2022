@@ -1,8 +1,8 @@
 import pymel.core as pm
 
-from ad_tools.maya_node import State, ComponentType, is_node_type, set_component_mode, \
+from maya_node import State, ComponentType, is_node_type, set_component_mode, \
     get_component_indices, get_component_mode, select_components, encode_components, reset_pivot
-from ad_tools import Axis, NodeType
+from scripts import Axis, NodeType
 
 
 def get_selected_geometry():

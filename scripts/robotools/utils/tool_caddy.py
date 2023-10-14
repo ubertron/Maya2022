@@ -5,8 +5,8 @@ from functools import partial
 from PySide2.QtCore import QSettings
 from PySide2.QtWidgets import QComboBox, QLabel, QPushButton, QSizePolicy
 
-from ad_tools import icon_path
-from ad_tools.ui.ad_maya_widgets import ADWidget, ADMayaDockableWidget, IconButton
+from scripts import icon_path
+from robotools.widgets.ad_maya_widgets import ADWidget, ADMayaDockableWidget, IconButton
 
 
 class ToolCaddy(ADMayaDockableWidget):
@@ -79,7 +79,7 @@ class ToolCaddy(ADMayaDockableWidget):
 
 
 if __name__ == '__main__':
-    from ad_tools.utils import tool_caddy
+    from robotools.utils import tool_caddy
 
     tools = tool_caddy.ToolCaddy()
     tools.show()

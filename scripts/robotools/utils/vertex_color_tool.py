@@ -1,11 +1,8 @@
 import pymel.core as pm
-import random
-import math
 
-from PySide2.QtWidgets import QWidget, QPushButton, QLabel, QSizePolicy, QApplication
-from ad_tools.ui.ad_maya_widgets import ADMayaWidget, ColorPickerButton, \
+from PySide2.QtWidgets import QLabel, QSizePolicy
+from robotools.widgets.ad_maya_widgets import ADMayaWidget, ColorPickerButton, \
     SwatchMultiButton, ADWidget
-from ad_tools import maya_vertex_colors, maya_node
 from functools import partial
 
 class VertexColorTool(ADMayaWidget):

@@ -1,6 +1,6 @@
 import pymel.core as pm
 
-from ad_tools.maya_poly import get_selected_geometry
+from maya_poly import get_selected_geometry
 
 
 def toggle_xray(nodes=None):

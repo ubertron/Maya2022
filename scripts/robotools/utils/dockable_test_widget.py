@@ -1,7 +1,6 @@
-from importlib import reload
 from PySide2.QtWidgets import QPushButton, QDialog, QVBoxLayout
 
-from ad_tools.ui.ad_dockable_widget import ADDockableBase
+from robotools.widgets import ADDockableBase
 
 
 class MyDockableWindow(ADDockableBase, QDialog):

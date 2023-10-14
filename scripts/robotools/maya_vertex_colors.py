@@ -2,7 +2,6 @@ import pymel.core as pm
 import random
 
 from typing import Any
-from ad_tools import maya_node, maya_poly
 
 
 def random_vector3() -> list:
