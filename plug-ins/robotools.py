@@ -15,12 +15,12 @@ ROBOTOOLS_ROOT: Path = USER_FOLDER.joinpath('Documents', 'Projects', 'Maya2022')
 ROBOTOOLS_SCRIPTS: Path = ROBOTOOLS_ROOT.joinpath('scripts')
 SITE_PACKAGES: Path = ROBOTOOLS_ROOT.joinpath('site-packages')
 ROBOTOOLS_PLUG_INS: Path = ROBOTOOLS_ROOT.joinpath('plug-ins')
-ENVIRONMENT_PATHS = {
+ENVIRONMENT_PATHS: dict = {
     'PYTHONPATH': [ROBOTOOLS_SCRIPTS.as_posix(), SITE_PACKAGES.as_posix()],
     'MAYA_PLUG_IN_PATH': [ROBOTOOLS_PLUG_INS.as_posix()],
     'ROBOTOOLS_ROOT': [ROBOTOOLS_ROOT.as_posix()]
 }
-PLATFORM_SEPARATOR = ':' if platform.system() == 'Darwin' else ';'
+PLATFORM_SEPARATOR: str = ':' if platform.system() == 'Darwin' else ';'
 
 
 def maya_useNewAPI():
@@ -31,7 +31,6 @@ def maya_useNewAPI():
     pass
 
 
-# command
 class RobotoolsInitializeCmd(om.MPxCommand):
     kPluginCmdName = 'RobotoolsInitialize'
 

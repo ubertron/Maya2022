@@ -18,7 +18,7 @@ _DEBUG_MODE: bool = False
 
 
 class ShelfManager:
-    TOP_LEVEL_SHELF: str = mel.eval("$tmpVar=$gShelfTopLevel")
+    TOP_LEVEL_SHELF: str = mel.eval('$tmpVar=$gShelfTopLevel')
 
     def __init__(self, name: str):
         self.name = name
@@ -63,7 +63,7 @@ class ShelfManager:
         :param tab_index:
         """
         if tab_index is not None:
-            assert tab_index <= len(self.shelf_names), "Invalid index"
+            assert tab_index <= len(self.shelf_names), 'Invalid index'
         pm.shelfTabLayout(self.TOP_LEVEL_SHELF, edit=True, selectTabIndex=tab_index if tab_index else self.tab_index)
 
     def select_tab_name(self, name: Optional[str] = None):
@@ -72,10 +72,10 @@ class ShelfManager:
         :param name: str
         """
         if name is not None:
-            assert name in self.shelf_names, "Invalid shelf name"
+            assert name in self.shelf_names, 'Invalid shelf name'
         pm.shelfTabLayout(self.TOP_LEVEL_SHELF, edit=True, selectTab=name if name else self.name)
 
-    def add_shelf_button(self, label: str, icon: Path, command: str = "", overlay_label: Optional[str] = None,
+    def add_shelf_button(self, label: str, icon: Path, command: str = '', overlay_label: Optional[str] = None,
                          overwrite: bool = True):
         """
         Add a button to the current shelf
@@ -91,12 +91,12 @@ class ShelfManager:
         if overlay_label:
             button.setImageOverlayLabel(overlay_label)
 
-    # @staticmethod
-    # def add_separator():
-    #     """
-    #     Add a separator to the current shelf
-    #     """
-    #     pm.separator(width=12, height=35, horizontal=False)
+    def add_separator(self):
+        """
+        Add a separator to the current shelf
+        """
+        pm.setParent(self.name)
+        pm.separator(width=12, height=35, horizontal=False)
 
     def delete_button(self, label: str):
         """
@@ -139,8 +139,8 @@ def build_shelf_command(function: Type, script: str, imports: Optional[str] = No
     :param imports:
     :return:
     """
-    import_string = f"{imports}\n\n" if imports else ""
-    return f"{import_string}{inspect.getsource(function)}\n\n{script}"
+    import_string = f'{imports}\n\n' if imports else ''
+    return f'{import_string}{inspect.getsource(function)}\n\n{script}'
 
 
 def message_script(text: str) -> str:
@@ -149,6 +149,6 @@ def message_script(text: str) -> str:
     @param text:
     @return:
     """
-    script = "import pymel.core as pm\n" \
-             f"pm.inViewMessage(assistMessage='{text}', fade=True, pos='midCenter')"
+    script = 'import pymel.core as pm\n' \
+             f'pm.inViewMessage(assistMessage="{text}", fade=True, pos="midCenter")'
     return script
