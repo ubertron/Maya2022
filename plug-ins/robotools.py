@@ -93,7 +93,7 @@ def bootstrap():
 
     logging.info(get_environment_variable('ROBOTOOLS_ROOT'))
 
-    from robotools import shelf_manager
+    from robotools.utils import shelf_manager
     shelf_manager.setup_robotools_shelf()
 
 

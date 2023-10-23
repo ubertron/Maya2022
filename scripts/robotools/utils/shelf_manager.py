@@ -8,7 +8,6 @@ from typing import List, Optional, Type
 from functools import partial
 from pathlib import Path
 
-import robotools.utils.tool_caddy
 from robotools import icon_path
 from robotools.maya_environment import get_environment_variable
 from robotools.maya_scene import load_scene
@@ -131,7 +130,6 @@ def setup_robotools_shelf():
     sm.create(select=True)
     sm.delete_buttons()
 
-    # launch_tool_caddy_cmd = build_shelf_command(function=launch_tool_caddy, script='launch_tool_caddy()')
     base_male_cmd = build_shelf_command(function=load_base_character, script='load_base_character("male")')
     base_female_cmd = build_shelf_command(function=load_base_character, script='load_base_character("female")')
     slice_cmd = build_shelf_command(function=slice_geometry, script='slice_geometry()')

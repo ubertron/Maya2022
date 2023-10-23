@@ -6,8 +6,9 @@ from PySide2.QtCore import QSettings
 from PySide2.QtWidgets import QComboBox, QLabel, QPushButton, QSizePolicy
 
 from robotools import icon_path
-from robotools.widgets.maya_widgets import MayaDockableWidget, IconButton
-from robotools.widgets.generic_widget import GenericWidget
+from robotools.widgets.maya_widgets import MayaDockableWidget
+from core.widgets.icon_button import IconButton
+from core.widgets.generic_widget import GenericWidget
 
 
 class ToolCaddy(MayaDockableWidget):

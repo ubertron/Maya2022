@@ -1,9 +1,10 @@
 import pymel.core as pm
 
 from PySide2.QtWidgets import QLabel, QSizePolicy
-from robotools.widgets.maya_widgets import MayaWidget, ColorPickerButton, \
-    SwatchMultiButton
-from robotools.widgets.generic_widget import GenericWidget
+from robotools.widgets.maya_widgets import MayaWidget
+from core.widgets.color_picker_button import ColorPickerButton
+from core.widgets.swatch_multi_button import SwatchMultiButton
+from core.widgets.generic_widget import GenericWidget
 from functools import partial
 
 class VertexColorTool(MayaWidget):
