@@ -5,11 +5,12 @@ from functools import partial
 from PySide2.QtCore import QSettings
 from PySide2.QtWidgets import QComboBox, QLabel, QPushButton, QSizePolicy
 
-from scripts import icon_path
-from robotools.widgets.ad_maya_widgets import ADWidget, ADMayaDockableWidget, IconButton
+from robotools import icon_path
+from robotools.widgets.maya_widgets import MayaDockableWidget, IconButton
+from robotools.widgets.generic_widget import GenericWidget
 
 
-class ToolCaddy(ADMayaDockableWidget):
+class ToolCaddy(MayaDockableWidget):
     control_name = 'ToolCaddy'
     window_name = 'Tool Caddy'
     JSON_PATH = os.path.join(os.path.dirname(__file__), 'tool_caddy.json')
@@ -17,15 +18,15 @@ class ToolCaddy(ADMayaDockableWidget):
 
     def __init__(self):
         super(ToolCaddy, self).__init__(self.control_name, self.window_name)
-        self.settings = QSettings('robosoft', 'tool_caddy')
+        self.settings = QSettings('robotools', 'tool_caddy')
         self.filter = self.settings.value('filter', self.all)
-        button_bar = ADWidget()
-        self.refresh_button = IconButton("Refresh Button", icon_path("refresh.png"), 24)
+        button_bar = GenericWidget()
+        self.refresh_button = IconButton("Refresh Button", icon_path('refresh.png'), 24)
         button_bar.add_widget(self.refresh_button)
         button_bar.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Maximum)
         self.combo_box = QComboBox()
-        self.button_widget = ADWidget()
-        self.script_widget = ADWidget()
+        self.button_widget = GenericWidget()
+        self.script_widget = GenericWidget()
         self.status_bar = QLabel('Ready')
         self.add_widget(button_bar)
         self.add_widget(self.combo_box)
@@ -50,12 +51,12 @@ class ToolCaddy(ADMayaDockableWidget):
         self.combo_box.currentIndexChanged.connect(self.combo_box_changed)
 
     def refresh_button_clicked(self):
-        self.status_bar.setText("Refresh button clicked")
+        self.status_bar.setText('Refresh button clicked')
         self.refresh_buttons()
 
     def combo_box_changed(self):
         self.filter = self.combo_box.currentText()
-        self.status_bar.setText(f"Filter changed to {self.filter}")
+        self.status_bar.setText(f'Filter changed to {self.filter}')
         self.settings.setValue('filter', self.filter)
         self.refresh_buttons()
 
@@ -78,8 +79,8 @@ class ToolCaddy(ADMayaDockableWidget):
         exec(script)
 
 
-if __name__ == '__main__':
-    from robotools.utils import tool_caddy
-
-    tools = tool_caddy.ToolCaddy()
-    tools.show()
+# if __name__ == '__main__':
+#     from robotools.utils import tool_caddy
+#
+#     tools = tool_caddy.ToolCaddy()
+#     tools.show()

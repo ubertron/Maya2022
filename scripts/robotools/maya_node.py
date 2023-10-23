@@ -8,7 +8,7 @@ def get_world_space_translation(transform):
     return pm.xform(transform, query=True, worldSpace=True, rotatePivot=True)
 
 
-def create_locator(translation: Sequence[float, float, float], local_scale: float = 0.1):
+def create_locator(translation: Sequence[float], local_scale: float = 0.1):
     """
     Create a space locator
     @param translation:

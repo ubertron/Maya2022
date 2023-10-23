@@ -1,11 +1,12 @@
 import pymel.core as pm
 
 from PySide2.QtWidgets import QLabel, QSizePolicy
-from robotools.widgets.ad_maya_widgets import ADMayaWidget, ColorPickerButton, \
-    SwatchMultiButton, ADWidget
+from robotools.widgets.maya_widgets import MayaWidget, ColorPickerButton, \
+    SwatchMultiButton
+from robotools.widgets.generic_widget import GenericWidget
 from functools import partial
 
-class VertexColorTool(ADMayaWidget):
+class VertexColorTool(MayaWidget):
     _name = 'Vertex Color Tool'
     button_size = 24
 
@@ -14,17 +15,17 @@ class VertexColorTool(ADMayaWidget):
         self.swatch_button = ColorPickerButton('Apply Vertex Color', self.button_size,
                                                self.apply_vertex_color_clicked)
         self.add_widget(self.swatch_button)
-        self.add_push_button('Apply Random Vertex Color',
-                             self.apply_random_vertex_color_clicked)
-        self.add_push_button('Remove Vertex Color',
-                             self.remove_vertex_color_clicked)
-        self.add_push_button('Select Faces By Vertex Color',
-                             self.select_by_vertex_color_clicked)
+        self.add_button('Apply Random Vertex Color',
+                        self.apply_random_vertex_color_clicked)
+        self.add_button('Remove Vertex Color',
+                        self.remove_vertex_color_clicked)
+        self.add_button('Select Faces By Vertex Color',
+                        self.select_by_vertex_color_clicked)
         self.selection_label = QLabel()
         self.selection_label.setWordWrap(True)
         self.selection_label.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Maximum)
         self.add_widget(self.selection_label)
-        self.button_widget = ADWidget()
+        self.button_widget = GenericWidget()
         self.button_widget.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Maximum)
         self.add_widget(self.button_widget)
         self.setMinimumWidth(328)

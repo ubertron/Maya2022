@@ -10,13 +10,13 @@ import shiboken2
 mixinWindows = {}
 
 
-class ADDockableBase(MayaQWidgetDockableMixin):
+class DockableBase(MayaQWidgetDockableMixin):
     """
     Convenience class for creating dockable Maya windows.
     """
 
     def __init__(self, controlName, **kwargs):
-        super(ADDockableBase, self).__init__(**kwargs)
+        super(DockableBase, self).__init__(**kwargs)
         self.setObjectName(controlName)
 
     def show(self, *args, **kwargs):
@@ -26,9 +26,9 @@ class ADDockableBase(MayaQWidgetDockableMixin):
         modulePath = inspect.getmodule(self).__name__
         className = self.__class__.__name__
         print(f"module path: {modulePath}\nclass name: {className}")
-        super(ADDockableBase, self).show(dockable=True,
-                                         uiScript="import {0}; {0}.{1}._restoreUI()".format(modulePath, className),
-                                         **kwargs)
+        super(DockableBase, self).show(dockable=True,
+                                       uiScript="import {0}; {0}.{1}._restoreUI()".format(modulePath, className),
+                                       **kwargs)
 
     @classmethod
     def _restoreUI(cls):

@@ -3,15 +3,17 @@
 import os
 import platform
 
+from pathlib import Path
 from PySide2.QtCore import Qt, QRegExp, QSize
-from PySide2.QtWidgets import QHBoxLayout, QPushButton, \
-    QSizePolicy, QVBoxLayout, QWidget, QLabel, QTextEdit, \
+from PySide2.QtWidgets import QPushButton, \
+    QSizePolicy, QWidget, QLabel, QTextEdit, \
     QColorDialog
 from PySide2.QtGui import QColor, QPixmap
 from maya.OpenMayaUI import MQtUtil
 from maya import cmds
 from shiboken2 import wrapInstance
-from robotools.widgets.ad_dockable_base import ADDockableBase
+from robotools.widgets.dockable_base import DockableBase
+from robotools.widgets.layouts import VBoxLayout, HBoxLayout
 
 
 def maya_main_window():
@@ -19,9 +21,9 @@ def maya_main_window():
     return wrapInstance(int(main_window_ptr), QWidget)
 
 
-class ADMayaWidget(QWidget):
+class MayaWidget(QWidget):
     def __init__(self, window_name, v_layout=True, parent=maya_main_window()):
-        super(ADMayaWidget, self).__init__(parent)
+        super(MayaWidget, self).__init__(parent)
         self.setWindowTitle(window_name)
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         margin_size = 2
@@ -41,7 +43,7 @@ class ADMayaWidget(QWidget):
                 t, reg_exp) for t in widget_types] for item in sublist]:
             widget.setSizePolicy(policy, policy)
 
-    def add_push_button(self, label, event):
+    def add_button(self, label, event):
         new_button = QPushButton(label)
         new_button.clicked.connect(event)
         self.push_buttons.append(new_button)
@@ -81,9 +83,9 @@ class ADMayaWidget(QWidget):
                 self.clear_layout(item.layout())
 
 
-class ADMayaDockableWidget(ADDockableBase, QWidget):
+class MayaDockableWidget(DockableBase, QWidget):
     def __init__(self, control_name, window_name, v_layout=True):
-        super(ADMayaDockableWidget, self).__init__(controlName=control_name)
+        super(MayaDockableWidget, self).__init__(controlName=control_name)
         self.setWindowTitle(window_name)
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         margin_size = 2
@@ -112,47 +114,6 @@ class ADMayaDockableWidget(ADDockableBase, QWidget):
     def replace_layout(self, layout):
         QWidget().setLayout(self.layout())
         self.setLayout(layout)
-
-
-class VBoxLayout(QVBoxLayout):
-    def __init__(self, margin=2):
-        super(VBoxLayout, self).__init__()
-        self.setContentsMargins(margin, margin, margin, margin)
-        self.setMargin(margin)
-        self.setSpacing(margin)
-
-
-class HBoxLayout(QHBoxLayout):
-    def __init__(self, margin=2):
-        super(HBoxLayout, self).__init__()
-        self.setContentsMargins(margin, margin, margin, margin)
-        self.setMargin(margin)
-        self.setSpacing(margin)
-
-
-class ADWidget(QWidget):
-    def __init__(self, parent=None):
-        super(ADWidget, self).__init__(parent=parent)
-        self.setSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding)
-        self.setLayout(VBoxLayout(2))
-
-    def add_widget(self, widget):
-        self.layout().addWidget(widget)
-
-    def replace_layout(self, layout):
-        QWidget().setLayout(self.layout())
-        self.setLayout(layout)
-
-    def clear_layout(self, layout=None):
-        if not layout:
-            layout = self.layout()
-        while layout.count():
-            item = layout.takeAt(0)
-            widget = item.widget()
-            if widget is not None:
-                widget.deleteLater()
-            else:
-                self.clear_layout(item.layout())
 
 
 def delete_existing_workspace_control(token):
@@ -229,11 +190,11 @@ class SwatchMultiButton(QWidget):
 
 
 class IconButton(QPushButton):
-    def __init__(self, label, icon_path, size=24):
+    def __init__(self, label: str, icon_path: Path, size: int = 24):
         super(IconButton, self).__init__()
-        if os.path.isfile(icon_path):
+        if icon_path.exists():
             self.setFixedSize(QSize(size, size))
-            self.setIcon(QPixmap(icon_path))
+            self.setIcon(QPixmap(icon_path.as_posix()))
             self.setToolTip(label)
         else:
             self.setMaximumHeight(size)

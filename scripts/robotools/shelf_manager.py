@@ -8,8 +8,10 @@ from typing import List, Optional, Type
 from functools import partial
 from pathlib import Path
 
-from robotools.maya_environment import get_environment_variable
+import robotools.utils.tool_caddy
 from robotools import icon_path
+from robotools.maya_environment import get_environment_variable
+from robotools.maya_scene import load_scene
 
 logging.basicConfig()
 logging.getLogger().setLevel(logging.INFO)
@@ -121,13 +123,27 @@ class ShelfManager:
 
 
 def setup_robotools_shelf():
+    """
+    Sets up the Robotools shelf
+    """
     sm = ShelfManager('Robotools')
     sm.delete()
     sm.create(select=True)
     sm.delete_buttons()
 
-    show_message = message_script('Robotools!!!')
-    sm.add_shelf_button(label='Robotools Message', icon=icon_path('robonobo_32.png'), command=show_message)
+    # launch_tool_caddy_cmd = build_shelf_command(function=launch_tool_caddy, script='launch_tool_caddy()')
+    base_male_cmd = build_shelf_command(function=load_base_character, script='load_base_character("male")')
+    base_female_cmd = build_shelf_command(function=load_base_character, script='load_base_character("female")')
+    slice_cmd = build_shelf_command(function=slice_geometry, script='slice_geometry()')
+    mirror_cmd = build_shelf_command(function=mirror_geometry, script='mirror_geometry()')
+
+    sm.add_shelf_button(label='Robotools', icon=icon_path('robonobo_32.png'), command=message_script('Robotools!'))
+    sm.add_separator()
+    sm.add_shelf_button(label='Load Base Male', icon=icon_path('base_male.png'), command=base_male_cmd)
+    sm.add_shelf_button(label='Load Base Female', icon=icon_path('base_female.png'), command=base_female_cmd)
+    sm.add_separator()
+    sm.add_shelf_button(label='Slice', icon=icon_path('slice.png'), command=slice_cmd)
+    sm.add_shelf_button(label='Mirror', icon=icon_path('mirror.png'), command=mirror_cmd)
 
 
 def build_shelf_command(function: Type, script: str, imports: Optional[str] = None) -> str:
@@ -149,6 +165,29 @@ def message_script(text: str) -> str:
     @param text:
     @return:
     """
-    script = 'import pymel.core as pm\n' \
-             f'pm.inViewMessage(assistMessage="{text}", fade=True, pos="midCenter")'
-    return script
+    return f'import pymel.core as pm\npm.inViewMessage(assistMessage="{text}", fade=True, pos="midCenter")'
+
+
+def launch_tool_caddy():
+    from robotools.maya_tools import launch_utility
+    from robotools.utils import tool_caddy
+
+    launch_utility(module=tool_caddy, utility_class=tool_caddy.ToolCaddy)
+
+
+def load_base_character(gender: str):
+    from robotools.maya_scene import load_scene
+    from robotools import SCENES_FOLDER
+
+    scene_path = SCENES_FOLDER.joinpath('base_mesh_male.mb' if gender == 'male' else 'base_mesh_female.mb')
+    load_scene(scene_path)
+
+
+def mirror_geometry():
+    from robotools.maya_poly import mirror
+    mirror()
+
+
+def slice_geometry():
+    from robotools.maya_poly import slice
+    slice()
