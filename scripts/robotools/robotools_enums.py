@@ -2,7 +2,7 @@ from enum import Enum, auto, unique
 
 
 @unique
-class ComponentType:
+class ComponentType(Enum):
     vertex = auto()
     edge = auto()
     face = auto()
@@ -31,3 +31,10 @@ class MayaNodeType(Enum):
     surfaceShape = auto()
     shape = auto()
     transform = auto()
+
+
+@unique
+class Axis(Enum):
+    x = auto()
+    y = auto()
+    z = auto()

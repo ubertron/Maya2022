@@ -37,10 +37,3 @@ class Gender(Enum):
     male = auto()
     female = auto()
     other = auto()
-
-
-@unique
-class Axis(Enum):
-    x = auto()
-    y = auto()
-    z = auto()

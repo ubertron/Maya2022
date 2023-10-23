@@ -1,8 +1,8 @@
 import pymel.core as pm
 
-from robotools.maya_node import State, ComponentType, is_node_type, set_component_mode, \
-    get_component_indices, get_component_mode, select_components, encode_components, reset_pivot
-from robotools import Axis, NodeType
+from robotools.maya_node import State, is_node_type, set_component_mode, get_component_indices, get_component_mode, \
+    select_components, encode_components, reset_pivot
+from robotools.robotools_enums import Axis, ComponentType
 
 
 def get_selected_geometry():
@@ -94,7 +94,7 @@ def convert_components(obj, components=None, from_type=ComponentType.face,
     return [i.index() for i in pm.ls(result, flatten=True)]
 
 
-def slice(nodes=None, axis=Axis.x, positive=True):
+def slice_geometry(nodes=None, axis=Axis.x, positive=True):
     state = State()
     set_component_mode(ComponentType.object)
     nodes = pm.ls(nodes) if nodes else pm.ls(sl=True, tr=True)
@@ -132,7 +132,7 @@ def mirror(nodes=None, axis=Axis.x, positive=False, merge_threshold=0.001):
 
     for item in nodes:
         pivot_position = [pm.xform(item, query=True, piv=True, ws=True)[i] for i in range(3)]
-        slice(item, axis, not positive)
+        slice_geometry(item, axis, not positive)
         pm.polyMirrorFace(item, ws=True, d=direction[axis], mergeMode=1, p=pivot_position, mt=merge_threshold, mtt=1)
     state.restore()
 
@@ -188,7 +188,7 @@ def extract_faces(node, faces, restore_state=True):
 def combine(nodes=None, construction_history=False):
     state = State()
     nodes = pm.ls(nodes) if nodes else pm.ls(sl=True, transforms=True)
-    nodes = [item for item in nodes if is_node_type(item, NodeType.mesh)]
+    nodes = [item for item in nodes if is_node_type(item, pm.nodetypes.mesh)]
     select_combined = list(
         set(nodes).intersection(state.object_selection)) and state.component_mode == ComponentType.object
     if len(nodes) > 1:

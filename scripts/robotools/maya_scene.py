@@ -32,6 +32,15 @@ def new_scene():
     pm.system.newFile(force=True)
 
 
+def import_model(import_path: Path) -> List[pm.nodetypes.Transform]:
+    """
+    Imports a file
+    @param import_path:
+    """
+    nodes = pm.importFile(import_path.as_posix(), returnNewNodes=True)
+    return nodes
+
+
 def load_scene(file_path: Path, force: bool = True):
     """
     Load a scene in Maya

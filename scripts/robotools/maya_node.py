@@ -2,6 +2,7 @@ import pymel.core as pm
 import random
 
 from typing import Sequence
+from robotools.robotools_enums import MayaNodeType, ComponentType
 
 
 def get_world_space_translation(transform):
@@ -119,16 +120,6 @@ class State:
 # --------------------------------------------------------------------------------------
 # COMPONENTS
 # --------------------------------------------------------------------------------------
-
-
-class ComponentType:
-    vertex = 'vertex'
-    edge = 'edge'
-    face = 'face'
-    object = 'object'
-    vertex_face = 'vertex face'
-    element = 'element'
-    uv = 'uv'
 
 
 def get_component_mode():
@@ -252,7 +243,7 @@ def get_transform_from_shape(node, full_path=False):
         pm.listRelatives(node, fullPath=full_path, parent=True)[0]
 
 
-def is_node_type(obj, node_type):
+def is_node_type(obj, node_type: MayaNodeType):
     shape = get_shapes_from_transform(obj)
     return node_type == pm.nodeType(shape[0]) if shape else None
 
