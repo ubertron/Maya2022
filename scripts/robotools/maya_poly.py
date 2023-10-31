@@ -95,6 +95,12 @@ def convert_components(obj, components=None, from_type=ComponentType.face,
 
 
 def slice_geometry(nodes=None, axis=Axis.x, positive=True):
+    """
+    Slice polygon geometry along an axis
+    @param nodes:
+    @param axis:
+    @param positive:
+    """
     state = State()
     set_component_mode(ComponentType.object)
     nodes = pm.ls(nodes) if nodes else pm.ls(sl=True, tr=True)
@@ -120,20 +126,24 @@ def slice_geometry(nodes=None, axis=Axis.x, positive=True):
     state.restore()
 
 
-def mirror(nodes=None, axis=Axis.x, positive=False, merge_threshold=0.001):
+def mirror_geometry(nodes=None, axis=Axis.x, positive=False, merge_threshold=0.001):
+    """
+    Mirror polygon geometry along an axis
+    @param nodes:
+    @param axis:
+    @param positive:
+    @param merge_threshold:
+    """
     state = State()
     set_component_mode(ComponentType.object)
     nodes = pm.ls(nodes) if nodes else pm.ls(sl=True, tr=True)
-    direction = {
-        Axis.x: 0 + positive,
-        Axis.y: 2 + positive,
-        Axis.z: 4 + positive
-    }
+    direction = {Axis.x: 0 + positive, Axis.y: 2 + positive, Axis.z: 4 + positive}
 
     for item in nodes:
         pivot_position = [pm.xform(item, query=True, piv=True, ws=True)[i] for i in range(3)]
         slice_geometry(item, axis, not positive)
         pm.polyMirrorFace(item, ws=True, d=direction[axis], mergeMode=1, p=pivot_position, mt=merge_threshold, mtt=1)
+
     state.restore()
 
 

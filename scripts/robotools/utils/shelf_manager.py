@@ -1,16 +1,10 @@
 import pymel.core as pm
 import inspect
-import getpass
 import logging
 
 from maya import mel
 from typing import List, Optional, Type
-from functools import partial
 from pathlib import Path
-
-from robotools import icon_path
-from robotools.maya_environment import get_environment_variable
-from robotools.maya_scene import load_scene
 
 logging.basicConfig()
 logging.getLogger().setLevel(logging.INFO)
@@ -121,29 +115,6 @@ class ShelfManager:
         return buttons if buttons is not None else []
 
 
-def setup_robotools_shelf():
-    """
-    Sets up the Robotools shelf
-    """
-    sm = ShelfManager('Robotools')
-    sm.delete()
-    sm.create(select=True)
-    sm.delete_buttons()
-
-    base_male_cmd = build_shelf_command(function=import_base_character, script='import_base_character("male")')
-    base_female_cmd = build_shelf_command(function=import_base_character, script='import_base_character("female")')
-    slice_cmd = build_shelf_command(function=slice_geometry, script='slice_geometry()')
-    mirror_cmd = build_shelf_command(function=mirror_geometry, script='mirror_geometry()')
-
-    sm.add_shelf_button(label='Robotools', icon=icon_path('robonobo_32.png'), command=message_script('Robotools!'))
-    sm.add_separator()
-    sm.add_shelf_button(label='Import Base Male', icon=icon_path('base_male.png'), command=base_male_cmd)
-    sm.add_shelf_button(label='Import Base Female', icon=icon_path('base_female.png'), command=base_female_cmd)
-    sm.add_separator()
-    sm.add_shelf_button(label='Slice', icon=icon_path('slice.png'), command=slice_cmd)
-    sm.add_shelf_button(label='Mirror', icon=icon_path('mirror.png'), command=mirror_cmd)
-
-
 def build_shelf_command(function: Type, script: str, imports: Optional[str] = None) -> str:
     """
     Creates a text script incorporating a function, a function call and an optional import header
@@ -173,35 +144,3 @@ def launch_tool_caddy():
     launch_utility(module=tool_caddy, utility_class=tool_caddy.ToolCaddy)
 
 
-def load_base_character(gender: str):
-    """
-    Load a base character scene
-    @param gender:
-    """
-    from robotools.maya_scene import load_scene
-    from robotools import SCENES_FOLDER
-
-    scene_path = SCENES_FOLDER.joinpath('base_mesh_male.mb' if gender == 'male' else 'base_mesh_female.mb')
-    load_scene(scene_path)
-
-
-def import_base_character(gender: str):
-    """
-    Import a base character
-    @param gender:
-    """
-    from robotools.maya_scene import import_model
-    from robotools import MODELS_FOLDER
-
-    import_path = MODELS_FOLDER.joinpath('base_mesh_male.fbx' if gender == 'male' else 'base_mesh_female.fbx')
-    import_model(import_path=import_path)
-
-
-def mirror_geometry():
-    from robotools.maya_poly import mirror
-    mirror()
-
-
-def slice_geometry():
-    from robotools.maya_poly import slice_geometry
-    slice_geometry()
