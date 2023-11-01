@@ -1,8 +1,32 @@
+import math
 import pymel.core as pm
+
+from typing import Optional
 
 from robotools.maya_node import State, is_node_type, set_component_mode, get_component_indices, get_component_mode, \
     select_components, encode_components, reset_pivot
 from robotools.robotools_enums import Axis, ComponentType
+
+
+def merge_vertices(transform: Optional[pm.nt.Transform] = None, precision: int = 5) -> pm.nt.PolyMergeVert:
+    """
+    Merge vertices on a selected or supplied object
+    @param transform:
+    @param precision:
+    @return:
+    """
+    transform = pm.ls(transform, tr=True) if transform else pm.ls(sl=True, tr=True)
+    result = pm.polyMergeVertex(transform, distance=precision_to_threshold(precision))
+    return pm.ls(result[0])[0]
+
+
+def precision_to_threshold(precision: int = 1) -> float:
+    """
+    Converts precision accuracy to a float
+    @param precision:
+    @return:
+    """
+    return 1.0 / math.pow(10, precision)
 
 
 def get_selected_geometry():
@@ -216,3 +240,10 @@ def combine(nodes=None, construction_history=False):
         return new_object
     else:
         pm.warning('Please select more than one valid object.')
+
+
+def quadrangulate():
+    """
+    Quadrangulate selection
+    """
+    pm.runtime.Quadrangulate()

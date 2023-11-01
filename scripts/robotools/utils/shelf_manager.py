@@ -82,7 +82,9 @@ class ShelfManager:
         """
         if label in self.current_button_labels and overwrite:
             self.delete_button(label=label)
-        button = pm.shelfButton(label=label, image1=icon, parent=self.name, command=command)
+
+        button = pm.shelfButton(label=label, image1=icon, parent=self.name, command=command,
+                                overlayLabelBackColor=(0, 0, 0, 0))
         if overlay_label:
             button.setImageOverlayLabel(overlay_label)
 
@@ -142,5 +144,3 @@ def launch_tool_caddy():
     from robotools.utils import tool_caddy
 
     launch_utility(module=tool_caddy, utility_class=tool_caddy.ToolCaddy)
-
-
