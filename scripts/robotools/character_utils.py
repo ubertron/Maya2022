@@ -9,7 +9,7 @@ BASE_MESH_MALE = 'base_mesh_male'
 BASE_MESH_FEMALE = 'base_mesh_female'
 
 
-def import_base_character(gender: str):
+def import_base_character(gender: str) -> pm.nodetypes.Transform:
     """
     Import a base character
     @param gender:
@@ -20,9 +20,10 @@ def import_base_character(gender: str):
     transform = next(x for x in result if type(x) is pm.nodetypes.Transform)
     pm.select(transform)
     pm.viewFit()
+    return transform
 
 
-def load_base_character(gender: str, latest: bool = True):
+def load_base_character(gender: str, latest: bool = True) -> pm.nodetypes.Transform:
     """
     Load a base character scene
     @param gender:
@@ -45,3 +46,4 @@ def load_base_character(gender: str, latest: bool = True):
     transform = next(x for x in result if type(x) is pm.nodetypes.Transform)
     pm.select(transform)
     pm.viewFit()
+    return transform
