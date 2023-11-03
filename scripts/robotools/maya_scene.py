@@ -48,7 +48,7 @@ def load_scene(file_path: Path, force: bool = True):
     @param force:
     """
     assert file_path.exists(), 'Path does not exist.'
-    pm.system.openFile(file_path.as_posix(), force=force)
+    return pm.system.openFile(file_path.as_posix(), force=force, returnNewNodes=True)
 
 
 def save_scene(force: bool = False) -> bool:

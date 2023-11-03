@@ -29,11 +29,17 @@ def setup_robotools_shelf():
     mirror_cmd = 'from robotools.geometry_utils import mirror_geometry\nmirror_geometry()'
     merge = 'from robotools.geometry_utils import merge_vertices\nmerge_vertices()'
     quadrangulate = 'from robotools.geometry_utils import quadrangulate\nquadrangulate()'
+    load_base_male = 'from robotools.character_utils import load_base_character\nload_base_character("male")'
+    load_base_female = 'from robotools.character_utils import load_base_character\nload_base_character("female")'
 
     sm.add_shelf_button(label=ROBOTOOLS_SHELF_NAME, icon=robonobo_icon, command=message_script(version_info))
     sm.add_separator()
     sm.add_shelf_button(label='Import Base Male', icon=icon_path('base_male.png'), command=base_male_cmd)
+    sm.add_shelf_button(label='Load Base Male', icon=icon_path('script.png'), command=load_base_male,
+                        overlay_label='loadM')
     sm.add_shelf_button(label='Import Base Female', icon=icon_path('base_female.png'), command=base_female_cmd)
+    sm.add_shelf_button(label='Load Base Female', icon=icon_path('script.png'), command=load_base_female,
+                        overlay_label='loadF')
     sm.add_separator()
     sm.add_shelf_button(label='Slice', icon=icon_path('slice.png'), command=slice_cmd)
     sm.add_shelf_button(label='Mirror', icon=icon_path('mirror.png'), command=mirror_cmd)
