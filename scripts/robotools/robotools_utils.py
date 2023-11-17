@@ -3,7 +3,6 @@ import pymel.core as pm
 from pathlib import Path
 
 from robotools import icon_path
-from robotools.geometry_utils import slice_geometry, mirror_geometry
 from robotools.utils.shelf_manager import ShelfManager, message_script
 
 ROBOTOOLS_SHELF_NAME: str = 'Robotools'
@@ -18,7 +17,7 @@ def setup_robotools_shelf():
     """
     sm = ShelfManager(ROBOTOOLS_SHELF_NAME)
     sm.delete()
-    sm.create(select=True)
+    sm.create(select=False)
     sm.delete_buttons()
 
     version_info = f'Robotools Shelf Version {ROBOTOOLS_SHELF_VERSION}: {ROBOTOOLS_SHELF_PLUG_IN_PATH.as_posix()}'
@@ -28,7 +27,7 @@ def setup_robotools_shelf():
     load_base_male = 'from robotools.character_utils import load_base_character\nload_base_character("male")'
     import_base_female = 'from robotools.character_utils import import_base_character\nimport_base_character("female")'
     load_base_female = 'from robotools.character_utils import load_base_character\nload_base_character("female")'
-    slice = 'from robotools.geometry_utils import slice_geometry\nslice_geometry()'
+    slice_geometry = 'from robotools.geometry_utils import slice_geometry\nslice_geometry()'
     mirror = 'from robotools.geometry_utils import mirror_geometry\nmirror_geometry()'
     merge = 'from robotools.geometry_utils import merge_vertices\nmerge_vertices()'
     quadrangulate = 'from robotools.geometry_utils import quadrangulate\nquadrangulate()'
@@ -40,7 +39,7 @@ def setup_robotools_shelf():
     sm.add_shelf_button(label='Import Base Female', icon=icon_path('base_female.png'), command=import_base_female)
     sm.add_shelf_button(label='Load Base Female', icon=script_icon, command=load_base_female, overlay_label='loadF')
     sm.add_separator()
-    sm.add_shelf_button(label='Slice', icon=icon_path('slice.png'), command=slice)
+    sm.add_shelf_button(label='Slice', icon=icon_path('slice.png'), command=slice_geometry)
     sm.add_shelf_button(label='Mirror', icon=icon_path('mirror.png'), command=mirror)
     sm.add_shelf_button(label='Merge Vertices', icon=script_icon, overlay_label='merge', command=merge)
     sm.add_shelf_button(label='Quadrangulate', icon=script_icon, overlay_label='quad', command=quadrangulate)
