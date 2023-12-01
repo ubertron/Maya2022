@@ -3,10 +3,10 @@ import sys
 
 from pathlib import Path
 
-ROBOTOOLS_ROOT: Path = Path(r'C:\Users\idavisan\Documents\Projects\Maya2022')
-ICON_DIR: Path = ROBOTOOLS_ROOT.joinpath('icons')
-MODELS_FOLDER: Path = ROBOTOOLS_ROOT.joinpath('models')
-SCENES_FOLDER: Path = ROBOTOOLS_ROOT.joinpath('scenes')
+PROJECT_ROOT: Path = Path(r'C:\Users\idavisan\Documents\Projects\Maya2022')
+ICON_DIR: Path = PROJECT_ROOT.joinpath('icons')
+MODELS_FOLDER: Path = PROJECT_ROOT.joinpath('models')
+SCENES_FOLDER: Path = PROJECT_ROOT.joinpath('scenes')
 
 
 def icon_path(file_name: str) -> Path:
