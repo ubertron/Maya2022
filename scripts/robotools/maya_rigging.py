@@ -1,6 +1,6 @@
 import pymel.core as pm
 
-from robotools import maya_node
+from robotools import node_utils
 from robotools.maya_layers import create_display_layer
 
 

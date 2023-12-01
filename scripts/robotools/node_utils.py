@@ -1,7 +1,7 @@
 import pymel.core as pm
 import random
 
-from typing import Sequence
+from typing import Sequence, List, Optional
 from robotools.robotools_enums import MayaNodeType, ComponentType
 
 
@@ -248,7 +248,11 @@ def is_node_type(obj, node_type: MayaNodeType):
     return node_type == pm.nodeType(shape[0]) if shape else None
 
 
-def super_reset(nodes=None):
+def super_reset(nodes: Optional[List[pm.nodetypes.Transform]] = None):
+    """
+    Freeze transformations, reset the pivot and delete history
+    @param nodes:
+    """
     nodes = pm.ls(nodes, tr=True) if nodes else pm.ls(sl=True, tr=True)
     freeze_transformations(nodes)
     reset_pivot(nodes)
@@ -273,3 +277,25 @@ def delete_history(nodes=None):
     set_component_mode(ComponentType.object)
     pm.delete(pm.ls(nodes, tr=True) if nodes else pm.ls(sl=True, tr=True), constructionHistory=True)
     state.restore()
+
+
+def duplicate_between(count: int) -> List[pm.nodetypes.Transform]:
+    """
+    Select two objects and this function duplicates a number of objects between the two objects
+    @param count:
+    """
+    objects = pm.ls(sl=True, tr=True)
+    assert len(objects) == 2, print('select two objects')
+    source = objects[0]
+    last_object = objects[1]
+    source_position = pm.getAttr(source.translate)
+    last_position = pm.getAttr(last_object.translate)
+    increment = [(last_position[i] - source_position[i]) / (count + 1) for i in range(3)]
+
+    for i in range(count):
+        new_object = pm.duplicate(source)[0]
+        new_position = [source_position[j] + increment[j] * (i + 1) for j in range(3)]
+        pm.setAttr(new_object.translate, new_position, type='float3')
+        objects.append(new_object)
+
+    return objects

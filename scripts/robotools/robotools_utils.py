@@ -17,7 +17,7 @@ ROBOTOOLS_SHELF_PLUG_IN_PATH: Path = Path(pm.pluginInfo(ROBOTOOLS_SHELF_PLUG_IN,
 DARWIN: str = 'Darwin'
 
 
-def setup_robotools_shelf():
+def setup_robotools_shelf(set_focus: bool = False):
     """
     Sets up the Robotools shelf
     """
@@ -37,13 +37,14 @@ def setup_robotools_shelf():
     mirror = 'from robotools.geometry_utils import mirror_geometry\nmirror_geometry()'
     merge = 'from robotools.geometry_utils import merge_vertices\nmerge_vertices()'
     quadrangulate = 'from robotools.geometry_utils import quadrangulate\nquadrangulate()'
-    update_hotkeys_cmd = build_shelf_command(function=update_hotkeys, script='update_hotkeys()')
+    update_robotools_cmd = build_shelf_command(function=update_robotools, script='update_robotools()')
     toggle_x_ray_cmd = build_shelf_command(function=toggle_x_ray, script='toggle_x_ray()',
                                            imports='import pymel.core as pm\nfrom typing import Optional, Sequence')
+    super_reset = 'import pymel.core as pm\nfrom typing import Optional\n\n' \
+                  'from robotools.node_utils import super_reset\nsuper_reset()'
 
     sm.add_shelf_button(label=ROBOTOOLS_SHELF_NAME, icon=robonobo_icon, command=message_script(version_info))
-    sm.add_shelf_button(label='Update Hotkeys', icon=script_icon, command=update_hotkeys_cmd,
-                        overlay_label='Htkys')
+    sm.add_shelf_button(label='Update Robotools', icon=script_icon, command=update_robotools_cmd, overlay_label='RT+')
     sm.add_separator()
     sm.add_shelf_button(label='Import Base Male', icon=icon_path('base_male.png'), command=import_base_male)
     sm.add_shelf_button(label='Load Base Male', icon=script_icon, command=load_base_male, overlay_label='loadM')
@@ -55,6 +56,11 @@ def setup_robotools_shelf():
     sm.add_shelf_button(label='Merge Vertices', icon=script_icon, overlay_label='merge', command=merge)
     sm.add_shelf_button(label='Quadrangulate', icon=script_icon, overlay_label='quad', command=quadrangulate)
     sm.add_shelf_button(label='Toggle X-Ray', icon=script_icon, overlay_label='x-ray', command=toggle_x_ray_cmd)
+    sm.add_separator()
+    sm.add_shelf_button(label='Super Reset', icon=script_icon, overlay_label='SR', command=super_reset)
+
+    if set_focus:
+        sm.select_tab_index()
 
 
 def delete_robotools_shelf():
@@ -93,16 +99,18 @@ class RobotoolsHotkeyManager(hotkey_utils.HotkeyManager):
                         key='[', cmd=is_mac, ctrl=is_pc, overwrite=True)
 
 
-def update_hotkeys():
+def update_robotools():
     """
-    Script deletes the hotkey preferences file and sets up a new one from script
+    Update the shelf and hotkeys
     """
     import logging
+    import os
     from importlib import reload
     from robotools import robotools_utils
 
-    logging.info('>>>> Updating Robotools Hotkeys')
+    logging.info('>>>> Updating Robotools')
     reload(robotools_utils)
+    robotools_utils.setup_robotools_shelf(set_focus=True)
 
     if robotools_utils.ROBOTOOLS_HOTKEYS.exists():
         os.remove(robotools_utils.ROBOTOOLS_HOTKEYS.as_posix())
