@@ -6,7 +6,7 @@ from PySide2.QtCore import Qt
 from typing import Optional, Callable
 from core.system_utils import is_using_maya_python
 from core import DARWIN_STR
-from core.common_enums import Alignment
+from core.enums import Alignment
 
 
 class XPWidget(QWidget):

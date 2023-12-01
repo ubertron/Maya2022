@@ -37,3 +37,9 @@ class Gender(Enum):
     male = auto()
     female = auto()
     other = auto()
+
+
+class Axis(Enum):
+    x = [1, 0, 0]
+    y = [0, 1, 0]
+    z = [0, 0, 1]

@@ -1,7 +1,7 @@
 import pymel.core as pm
 
 from robotools.maya_scene import load_scene, import_model
-from core.common_enums import FileExtension, Gender
+from core.enums import FileExtension, Gender
 from robotools import SCENES_FOLDER, MODELS_FOLDER
 
 

@@ -2,6 +2,7 @@ import pymel.core as pm
 import platform
 
 from pathlib import Path
+from typing import Optional, Sequence
 
 from robotools import icon_path, PROJECT_ROOT
 from robotools.utils.shelf_manager import ShelfManager, message_script, build_shelf_command
@@ -37,6 +38,8 @@ def setup_robotools_shelf():
     merge = 'from robotools.geometry_utils import merge_vertices\nmerge_vertices()'
     quadrangulate = 'from robotools.geometry_utils import quadrangulate\nquadrangulate()'
     update_hotkeys_cmd = build_shelf_command(function=update_hotkeys, script='update_hotkeys()')
+    toggle_x_ray_cmd = build_shelf_command(function=toggle_x_ray, script='toggle_x_ray()',
+                                           imports='import pymel.core as pm\nfrom typing import Optional, Sequence')
 
     sm.add_shelf_button(label=ROBOTOOLS_SHELF_NAME, icon=robonobo_icon, command=message_script(version_info))
     sm.add_shelf_button(label='Update Hotkeys', icon=script_icon, command=update_hotkeys_cmd,
@@ -51,6 +54,7 @@ def setup_robotools_shelf():
     sm.add_shelf_button(label='Mirror', icon=icon_path('mirror.png'), command=mirror)
     sm.add_shelf_button(label='Merge Vertices', icon=script_icon, overlay_label='merge', command=merge)
     sm.add_shelf_button(label='Quadrangulate', icon=script_icon, overlay_label='quad', command=quadrangulate)
+    sm.add_shelf_button(label='Toggle X-Ray', icon=script_icon, overlay_label='x-ray', command=toggle_x_ray_cmd)
 
 
 def delete_robotools_shelf():
@@ -104,3 +108,14 @@ def update_hotkeys():
         os.remove(robotools_utils.ROBOTOOLS_HOTKEYS.as_posix())
 
     robotools_utils.RobotoolsHotkeyManager().init_hotkeys()
+
+
+def toggle_x_ray(input_nodes: Optional[Sequence[pm.nodetypes.Transform]] = ()):
+    """
+    Toggle the display mode of selected objects to x-ray
+    @param input_nodes:
+    """
+    input_nodes = pm.ls(sl=True, transforms=True) if not input_nodes else input_nodes
+
+    for node in input_nodes:
+        pm.displaySurface(node, xRay=(not pm.displaySurface(node, xRay=True, query=True)[0]))
