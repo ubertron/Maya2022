@@ -29,6 +29,7 @@ def setup_robotools_shelf(set_focus: bool = False):
     version_info = f'Robotools Shelf Version {ROBOTOOLS_SHELF_VERSION}: {ROBOTOOLS_SHELF_PLUG_IN_PATH.as_posix()}'
     robonobo_icon = icon_path('robonobo_32.png')
     script_icon = icon_path('script.png')
+    standard_imports = 'import pymel.core as pm\nfrom typing import Optional\n\n'
     import_base_male = 'from robotools.character_utils import import_base_character\nimport_base_character("male")'
     load_base_male = 'from robotools.character_utils import load_base_character\nload_base_character("male")'
     import_base_female = 'from robotools.character_utils import import_base_character\nimport_base_character("female")'
@@ -40,8 +41,9 @@ def setup_robotools_shelf(set_focus: bool = False):
     update_robotools_cmd = build_shelf_command(function=update_robotools, script='update_robotools()')
     toggle_x_ray_cmd = build_shelf_command(function=toggle_x_ray, script='toggle_x_ray()',
                                            imports='import pymel.core as pm\nfrom typing import Optional, Sequence')
-    super_reset = 'import pymel.core as pm\nfrom typing import Optional\n\n' \
-                  'from robotools.node_utils import super_reset\nsuper_reset()'
+    super_reset = f'{standard_imports}from robotools.node_utils import super_reset\nsuper_reset()'
+    toggle_rtc = f'{standard_imports}from robotools.node_utils import toggle_retain_component_spacing' \
+                 f'\ntoggle_retain_component_spacing()'
 
     sm.add_shelf_button(label=ROBOTOOLS_SHELF_NAME, icon=robonobo_icon, command=message_script(version_info))
     sm.add_shelf_button(label='Update Robotools', icon=script_icon, command=update_robotools_cmd, overlay_label='RT+')
@@ -59,7 +61,10 @@ def setup_robotools_shelf(set_focus: bool = False):
     sm.add_shelf_button(label='Quadrangulate', icon=script_icon, overlay_label='quad', command=quadrangulate)
     sm.add_shelf_button(label='Toggle X-Ray', icon=script_icon, overlay_label='x-ray', command=toggle_x_ray_cmd)
     sm.add_separator()
+    sm.add_label(text='Nodes:', bold=True)
     sm.add_shelf_button(label='Super Reset', icon=script_icon, overlay_label='SR', command=super_reset)
+    sm.add_shelf_button(label='Toggle Retain Component Spacing', icon=script_icon, overlay_label='RTC',
+                        command=toggle_rtc)
 
     if set_focus:
         sm.select_tab_index()

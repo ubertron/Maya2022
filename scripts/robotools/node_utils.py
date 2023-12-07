@@ -299,3 +299,13 @@ def duplicate_between(count: int) -> List[pm.nodetypes.Transform]:
         objects.append(new_object)
 
     return objects
+
+
+def toggle_retain_component_spacing():
+    """
+    Toggle retain component spacing setting for moving components
+    """
+    state = pm.manipMoveContext('Move', q=True, snapComponentsRelative=True)
+    pm.manipMoveContext('Move', e=True, snapComponentsRelative=(not state))
+    state = pm.manipMoveContext('Move', q=True, snapComponentsRelative=True)
+    pm.inViewMessage(amg="Retain component spacing: <hl>%s</hl>" % state, pos='midCenter', fade=True)

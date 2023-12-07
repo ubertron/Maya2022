@@ -17,8 +17,9 @@ _DEBUG_MODE: bool = False
 class ShelfManager:
     TOP_LEVEL_SHELF: str = mel.eval('$tmpVar=$gShelfTopLevel')
 
-    def __init__(self, name: str):
+    def __init__(self, name: str, spacing: int = 4):
         self.name = name
+        self._spacing = spacing
 
     @property
     def shelf_names(self) -> List[str]:
@@ -37,6 +38,19 @@ class ShelfManager:
     def tab_index(self) -> int or None:
         return self.shelf_names.index(self.name) + 1 if self.name in self.shelf_names else None
 
+    @property
+    def exists(self):
+        return pm.shelfLayout(self.name, query=True, exists=True)
+
+    @property
+    def spacing(self) -> int or None:
+        return pm.shelfLayout(self.name, query=True, spacing=True) if self.exists else None
+
+    @spacing.setter
+    def spacing(self, value: int):
+        if self.exists:
+            pm.shelfLayout(self.name, edit=True, spacing=value)
+
     def create(self, select: bool = False):
         """
         Add the shelf to the ui
@@ -44,6 +58,7 @@ class ShelfManager:
         """
         if self.name not in self.shelf_names:
             pm.shelfLayout(self.name, parent=self.TOP_LEVEL_SHELF)
+            self.spacing = self._spacing
             if select:
                 self.select_tab_index()
 
