@@ -46,11 +46,13 @@ def setup_robotools_shelf(set_focus: bool = False):
     sm.add_shelf_button(label=ROBOTOOLS_SHELF_NAME, icon=robonobo_icon, command=message_script(version_info))
     sm.add_shelf_button(label='Update Robotools', icon=script_icon, command=update_robotools_cmd, overlay_label='RT+')
     sm.add_separator()
+    sm.add_label(text='Characters:', bold=True)
     sm.add_shelf_button(label='Import Base Male', icon=icon_path('base_male.png'), command=import_base_male)
     sm.add_shelf_button(label='Load Base Male', icon=script_icon, command=load_base_male, overlay_label='loadM')
     sm.add_shelf_button(label='Import Base Female', icon=icon_path('base_female.png'), command=import_base_female)
     sm.add_shelf_button(label='Load Base Female', icon=script_icon, command=load_base_female, overlay_label='loadF')
     sm.add_separator()
+    sm.add_label(text='Modeling:', bold=True)
     sm.add_shelf_button(label='Slice', icon=icon_path('slice.png'), command=slice_geometry)
     sm.add_shelf_button(label='Mirror', icon=icon_path('mirror.png'), command=mirror)
     sm.add_shelf_button(label='Merge Vertices', icon=script_icon, overlay_label='merge', command=merge)
@@ -61,6 +63,8 @@ def setup_robotools_shelf(set_focus: bool = False):
 
     if set_focus:
         sm.select_tab_index()
+
+    sm.select_tab_index()
 
 
 def delete_robotools_shelf():

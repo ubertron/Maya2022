@@ -3,8 +3,10 @@ import inspect
 import logging
 
 from maya import mel
-from typing import List, Optional, Type
+from typing import List, Optional, Type, Tuple
 from pathlib import Path
+from PySide2.QtGui import QPalette
+from PySide2.QtWidgets import QFrame
 
 logging.basicConfig()
 logging.getLogger().setLevel(logging.INFO)
@@ -88,12 +90,26 @@ class ShelfManager:
         if overlay_label:
             button.setImageOverlayLabel(overlay_label)
 
-    def add_separator(self):
+    def add_separator(self, color: Tuple[float] = (0.9, 0.9, 0.9)):
         """
         Add a separator to the current shelf
+        @param color: tuple
         """
         pm.setParent(self.name)
-        pm.separator(width=12, height=35, horizontal=False)
+        separator = pm.separator(width=12, height=35, horizontal=False)
+        qt_sep: QFrame = pm.windows.toQtObject(separator)
+        qt_sep.setFixedWidth(1)
+        rgb = [str(int(color[i] * 255)) for i in range(3)]
+        rgb_string = f'rgb({", ".join(rgb)})'
+        style_string = f'border-width: 1; border-style: solid; border-color: {rgb_string};'
+        qt_sep.setStyleSheet(style_string)
+
+    def add_label(self, text: str, bold: bool = False):
+        """
+        Add a text to the current shelf
+        """
+        pm.setParent(self.name)
+        pm.text(label=f'<b>{text}</b>' if bold else text, width=len(text) * 7, align='center')
 
     def delete_button(self, label: str):
         """
