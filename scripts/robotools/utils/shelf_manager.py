@@ -8,6 +8,8 @@ from pathlib import Path
 from PySide2.QtGui import QPalette
 from PySide2.QtWidgets import QFrame
 
+from robotools import icon_path
+
 logging.basicConfig()
 logging.getLogger().setLevel(logging.INFO)
 
@@ -87,12 +89,12 @@ class ShelfManager:
             assert name in self.shelf_names, 'Invalid shelf name'
         pm.shelfTabLayout(self.TOP_LEVEL_SHELF, edit=True, selectTab=name if name else self.name)
 
-    def add_shelf_button(self, label: str, icon: Path, command: str = '', overlay_label: Optional[str] = None,
-                         overwrite: bool = True):
+    def add_shelf_button(self, label: str, icon: Optional[Path] = None, command: str = '',
+                         overlay_label: Optional[str] = None,  overwrite: bool = True):
         """
         Add a button to the current shelf
         :param label: str
-        :param icon: Path
+        :param icon: Path or None
         :param command: str
         :param overlay_label: str
         :param overwrite: bool
@@ -100,6 +102,7 @@ class ShelfManager:
         if label in self.current_button_labels and overwrite:
             self.delete_button(label=label)
 
+        icon = icon if icon else icon_path('script.png')
         button = pm.shelfButton(label=label, image1=icon, parent=self.name, command=command,
                                 overlayLabelBackColor=(0, 0, 0, 0))
         if overlay_label:

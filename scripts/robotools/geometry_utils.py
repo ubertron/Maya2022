@@ -2,6 +2,7 @@ import math
 import pymel.core as pm
 
 from typing import Optional
+from maya import mel
 
 from robotools.node_utils import State, is_node_type, set_component_mode, get_component_indices, get_component_mode, \
     select_components, encode_components, reset_pivot
@@ -247,3 +248,10 @@ def quadrangulate():
     Quadrangulate selection
     """
     pm.runtime.Quadrangulate()
+
+
+def target_weld():
+    """
+    Start target weld mode
+    """
+    mel.eval('dR_targetWeldTool')
