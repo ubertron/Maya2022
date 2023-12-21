@@ -70,13 +70,12 @@ def lambert_file_texture_shader(texture_path: Path, name=None, check_existing: b
     return output_shader, shading_group
 
 
-def set_diffuse_color(shader, *color):
+def set_diffuse_color(shader, color: Tuple[float]):
     """
     Set the diffuse value of a shader
     @param shader:
     @param color:
     """
-    color = color[0] if isinstance(color[0], list) else color
     pm.setAttr(shader.colorR, color[0])
     pm.setAttr(shader.colorG, color[1])
     pm.setAttr(shader.colorB, color[2])

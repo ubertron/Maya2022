@@ -131,7 +131,7 @@ def update_robotools():
 
     logging.info('>>>> Updating Robotools')
     reload(robotools_utils)
-    robotools_utils.setup_robotools_shelf(set_focus=True)
+    robotools_utils.setup_robotools_shelf(set_focus=False)
 
     if robotools_utils.ROBOTOOLS_HOTKEYS.exists():
         os.remove(robotools_utils.ROBOTOOLS_HOTKEYS.as_posix())
