@@ -26,7 +26,6 @@ def setup_robotools_shelf(set_focus: bool = False):
     sm.create(select=False)
     sm.delete_buttons()
 
-    version_info = f'Robotools Shelf Version {ROBOTOOLS_SHELF_VERSION}: {ROBOTOOLS_SHELF_PLUG_IN_PATH.as_posix()}'
     robonobo_icon = icon_path('robonobo_32.png')
     standard_imports = 'import pymel.core as pm\nfrom typing import Optional\n\n'
     import_base_male = 'from robotools.character_utils import import_base_character\nimport_base_character("male")'
@@ -47,8 +46,12 @@ def setup_robotools_shelf(set_focus: bool = False):
     toggle_ref_layer_shading = f'{standard_imports}from robotools.layer_utils import toggle_layer_shading\n' \
                                f'toggle_layer_shading("referenceLayer")'
     target_weld = f'{standard_imports}from robotools.geometry_utils import target_weld\ntarget_weld()'
+    connect_edges = f'{standard_imports}from robotools.geometry_utils import connect_edges\nconnect_edges()'
+    connect_edges_flow = f'{standard_imports}from robotools.geometry_utils import connect_edges\nconnect_edges(True)'
+    relax_vertices = f'{standard_imports}from robotools.geometry_utils import relax_vertices\nrelax_vertices()'
+    robotools_about = build_shelf_command(function=robotools_script, script='robotools_script()')
 
-    sm.add_shelf_button(label=ROBOTOOLS_SHELF_NAME, icon=robonobo_icon, command=message_script(version_info))
+    sm.add_shelf_button(label=ROBOTOOLS_SHELF_NAME, icon=robonobo_icon, command=message_script(VERSION_INFO))
     sm.add_shelf_button(label='Update Robotools', command=update_robotools_cmd, overlay_label='RT+')
     sm.add_separator()
     sm.add_label(text='Characters:', bold=True)
@@ -71,6 +74,9 @@ def setup_robotools_shelf(set_focus: bool = False):
     sm.add_shelf_button(label='Quadrangulate', overlay_label='quad', command=quadrangulate)
     sm.add_shelf_button(label='Toggle X-Ray', overlay_label='x-ray', command=toggle_x_ray_cmd)
     sm.add_shelf_button(label='Target Weld', command=target_weld, overlay_label='tgtWd')
+    sm.add_shelf_button(label='Connect Edges', command=connect_edges, overlay_label='cnct')
+    sm.add_shelf_button(label='Connect Edges (Flow)', command=connect_edges_flow, overlay_label='cnctFl')
+    sm.add_shelf_button(label='Relax Vertices', command=relax_vertices, overlay_label='relax')
     sm.add_separator()
     sm.add_label(text='Nodes:', bold=True)
     sm.add_shelf_button(label='Super Reset', overlay_label='SR', command=super_reset)
@@ -148,3 +154,13 @@ def toggle_x_ray(input_nodes: Optional[Sequence[pm.nodetypes.Transform]] = ()):
 
     for node in input_nodes:
         pm.displaySurface(node, xRay=(not pm.displaySurface(node, xRay=True, query=True)[0]))
+
+
+def robotools_script():
+    import pymel.core as pm
+    import pyperclip
+    from robotools.robotools_utils import ROBOTOOLS_SHELF_VERSION, ROBOTOOLS_SHELF_PLUG_IN_PATH
+
+    VERSION_INFO = f'Robotools Shelf Version {ROBOTOOLS_SHELF_VERSION}: {ROBOTOOLS_SHELF_PLUG_IN_PATH.as_posix()}'
+    pm.inViewMessage(assistMessage=VERSION_INFO, fade=True, pos='midCenter')
+    pyperclip.copy(VERSION_INFO)

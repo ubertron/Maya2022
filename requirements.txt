@@ -1,1 +1,2 @@
+pyperclip
 PySide2
